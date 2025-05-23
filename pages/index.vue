@@ -242,13 +242,13 @@ onMounted(async () => {
 
 <template>
   <div>
-    <button @click="test">Test Ethers</button>
-    <button @click="createPool">Create Pool</button>
-    <button @click="getPool">Get pool</button>
-    <button @click="updatePool">Update Pool</button>
-    <button @click="depositLiquidity">Add Liquidity</button>
+<!--    <button @click="test">Test Ethers</button>-->
+<!--    <button @click="createPool">Create Pool</button>-->
+<!--    <button @click="getPool">Get pool</button>-->
+<!--    <button @click="updatePool">Update Pool</button>-->
+<!--    <button @click="depositLiquidity">Add Liquidity</button>-->
 
-    <p>1 HLS = {{ price }} TKN2</p>
+<!--    <p class="bg-background">1 HLS = {{ price }} TKN2</p>-->
   </div>
 </template>
 

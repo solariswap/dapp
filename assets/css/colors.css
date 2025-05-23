@@ -1,0 +1,37 @@
+:root {
+  /* Brand Colors (SolariSwap Sun Palette) */
+  --color-primary: #faad1f; /* #ffb84d (color-1) */
+  --color-primary-foreground: #241c0f; /* For text/icons on primary */
+
+  --color-secondary: rgb(255 139 66); /* #ff8b42 (color-2) */
+  --color-secondary-foreground: rgb(68 32 0);
+
+  --color-accent: hsl(217.2 32.6% 17.5%);
+  --color-accent-foreground: hsl(210 40% 98%);
+
+  --color-accent-2: rgb(255 76 56); /* #ff4c38 (color-4) */
+  --color-accent-3: rgb(255 60 46); /* #ff3c2e (color-5) */
+
+  /* Base Colors */
+  --color-background: hsl(222.2 84% 4.9%);
+  --color-foreground: hsl(210 40% 98%);
+
+  /* Surface & Borders */
+  --color-surface: rgb(254 243 199); /* Light Yellow Surface */
+  --color-border: hsl(217.2 32.6% 17.5%); /* Tailwind gray-300 */
+  --color-border-strong: rgb(75 85 99); /* Tailwind gray-700 */
+  --color-border-muted: rgb(229 231 235); /* Tailwind gray-200 */
+
+  /* State Colors */
+  --color-success: rgb(132 204 22); /* Lively Green */
+  --color-warning: rgb(253 224 71); /* Bright Yellow */
+  --color-error: rgb(239 68 68); /* Vivid Red */
+
+  /* Muted */
+  --color-muted: hsl(215 20.2% 65.1%); /* Muted Orange (color-2) */
+  --color-muted-foreground: rgb(120 53 15);
+}
+
+/* Dark mode overrides */
+.dark {
+}

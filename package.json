@@ -11,11 +11,17 @@
   },
   "dependencies": {
     "@nuxt/eslint": "1.4.0",
+    "@nuxt/fonts": "0.11.4",
+    "@nuxt/icon": "1.13.0",
+    "@pinia/nuxt": "0.11.0",
+    "@tailwindcss/vite": "^4.1.7",
     "@uniswap/sdk-core": "^7.7.2",
     "@uniswap/v4-sdk": "^1.21.4",
     "eslint": "^9.0.0",
     "jsbi": "^3.2.5",
     "nuxt": "^3.17.3",
+    "pinia": "^3.0.2",
+    "tailwindcss": "^4.1.7",
     "vue": "^3.5.14",
     "vue-router": "^4.5.1"
   },
@@ -25,6 +31,7 @@
     "eslint-plugin-prettier": "^5.4.0",
     "ethers": "^5.7.2",
     "prettier": "^3.5.3",
+    "sass-embedded": "^1.89.0",
     "viem": "^2.30.0"
   }
 }
