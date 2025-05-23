@@ -15,6 +15,7 @@ const value = ref(0);
       :key="`step-${k}`"
       :active="value === k"
       :completed="value < k"
+      :last="k + 1 === steps.length"
       :index="k + 1"
     >
       {{ step.name }}

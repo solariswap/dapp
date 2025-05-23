@@ -1,17 +1,12 @@
-type Currency = {
-  name: string;
-  symbol: string;
-  address: string;
-  decimals: number;
-};
+import type { TokenCurrency } from "~/utils/type/base.type";
 
 type StoreState = {
-  currency0?: Currency;
-  currency1?: Currency;
+  currency0?: TokenCurrency;
+  currency1?: TokenCurrency;
 };
 
 export const usePoolCreationStore = defineStore("poolCreationStore", () => {
-  const state = ref<StoreState>();
+  const state = ref<StoreState>({});
 
   return { state };
 });

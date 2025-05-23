@@ -7,11 +7,11 @@ const store = usePoolCreationStore();
 </script>
 
 <template>
-  <div class="grid grid-cols-6 gap-md">
-    <div class="col-span-2 h-6">
+  <div class="grid laptop:grid-cols-6 gap-md">
+    <div class="laptop:col-span-2">
       <PoolCreationSteps />
     </div>
-    <div class="col-span-4 h-6">
+    <div class="laptop:col-span-4">
       <PoolTokensAndFeeInput />
     </div>
   </div>

@@ -1,17 +1,31 @@
 <script setup lang="ts">
 import Currency from "~/components/pool/Currency.vue";
+import type { TokenCurrency } from "~/utils/type/base.type";
+import { useModalStore } from "~/store/layout/modal.store";
+import TokenSelectorModal from "~/components/base/input/modal/TokenSelectorModal.vue";
+
+const modalStore = useModalStore();
+
+const model = defineModel<TokenCurrency>();
+
+const openPoolCreationModal = () => {
+  modalStore.open(TokenSelectorModal, { ref: model });
+};
 </script>
 
 <template>
   <button
     type="button"
-    class="card bg-background flex items-center justify-between gap-sm hover:bg-accent"
+    class="card bg-background flex items-center justify-between gap-sm hover:bg-accent cursor-pointer"
+    @click="openPoolCreationModal"
   >
     <Currency
-      symbol="USDT"
-      logo="https://altcoinsbox.com/wp-content/uploads/2023/01/tether-logo.webp"
+      v-if="model"
+      :symbol="model.symbol"
+      :name="model.name"
+      :logo="model.logoURI"
     />
-    <span class="text-sm text-muted-foreground">Select</span>
+    <span class="text-sm text-muted-foreground font-bold">Select</span>
   </button>
 </template>
 

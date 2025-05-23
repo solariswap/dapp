@@ -3,6 +3,7 @@ const props = defineProps<{
   active: boolean;
   completed: boolean;
   index: number;
+  last: boolean;
 }>();
 
 const parentCls = computed(() => {
@@ -26,7 +27,11 @@ const idxCls = computed(() => {
     :class="parentCls"
   >
     <span
-      class="w-12 rounded-full aspect-square grid place-items-center shrink-0"
+      v-if="!last"
+      class="absolute h-full top-1/2 w-[1px] bg-border translate-x-[19px]"
+    ></span>
+    <span
+      class="w-10 rounded-full aspect-square grid place-items-center shrink-0 relative"
       :class="idxCls"
     >
       {{ index }}

@@ -24,7 +24,7 @@ const routes = [
     class="py-sm laptop:py-md border-b border-border fixed top-0 inset-x-0 bg-background z-50"
   >
     <div
-      class="max-w-desktop mx-auto px-md desktop:px-0 flex items-center gap-md"
+      class="max-w-desktop mx-auto px-md desktop:px-0 flex items-center gap-lg"
     >
       <BaseLogo />
       <div
@@ -35,7 +35,7 @@ const routes = [
           <li
             v-for="route in routes"
             :key="`route-${route.name}`"
-            class="text-3xl laptop:text-base"
+            class="text-3xl laptop:text-lg"
           >
             <nuxt-link
               :to="route.path"

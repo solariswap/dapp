@@ -20,6 +20,8 @@
   --color-muted-foreground: var(--color-muted-foreground);
   --color-card: var(--color-card);
   --color-card-foreground: var(--color-card-foreground);
+  --color-input: var(--color-input);
+  --color-ring: var(--color-ring);
 
   --spacing-xs: 0.5rem; /* 8px */
   --spacing-sm: 1rem; /* 16px */
