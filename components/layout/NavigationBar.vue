@@ -21,7 +21,7 @@ const routes = [
 
 <template>
   <nav
-    class="py-sm laptop:py-md border-b border-border fixed top-0 inset-x-0 bg-background"
+    class="py-sm laptop:py-md border-b border-border fixed top-0 inset-x-0 bg-background z-50"
   >
     <div
       class="max-w-desktop mx-auto px-md desktop:px-0 flex items-center gap-md"

@@ -38,7 +38,7 @@ const attrs = computed(() => {
   <component
     :is="component"
     v-bind="attrs"
-    class="button font-bold cursor-pointer bg-primary hover:bg-secondary text-primary-foreground py-2 px-4 rounded flex items-center justify-center gap-2"
+    class="button font-medium cursor-pointer bg-primary hover:bg-primary/80 text-primary-foreground py-2 px-4 rounded flex items-center justify-center gap-2"
   >
     <Icon v-if="leadingIcon" :name="leadingIcon" />
     <span><slot /></span>

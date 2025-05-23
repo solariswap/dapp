@@ -4,6 +4,8 @@ import Form from "~/components/base/form/Form.vue";
 import FormInput from "~/components/base/form/FormInput.vue";
 import Label from "~/components/base/form/Label.vue";
 import CurrencySelector from "~/components/base/input/CurrencySelector.vue";
+import PoolFeeInput from "~/components/pool/creation/input/PoolFeeInput.vue";
+import Button from "~/components/base/input/Button.vue";
 </script>
 
 <template>
@@ -19,7 +21,14 @@ import CurrencySelector from "~/components/base/input/CurrencySelector.vue";
           <Label for="quote-token">Quote Token</Label>
           <CurrencySelector id="quote-token" />
         </FormInput>
+        <FormInput>
+          <Label for="pool-fee">Pool Fee</Label>
+          <PoolFeeInput />
+        </FormInput>
       </Form>
+      <template #footer>
+        <Button class="w-full"> Continue </Button>
+      </template>
     </Card>
   </div>
 </template>
