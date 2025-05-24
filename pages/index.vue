@@ -23,7 +23,11 @@ const provider = new ethers.providers.JsonRpcProvider(
   "https://testnet1.helioschainlabs.org",
 );
 
-const wallet = new ethers.Wallet("", provider);
+// unused private key for testing purposes
+const wallet = new ethers.Wallet(
+  "0x2b17b39c8ed9520fd87ce132d98afb27f2c341223e14c6a9ebc93923a479e00f",
+  provider,
+);
 
 const poolManager = new ethers.Contract(
   "0xebd825164B8abFA0Eb29dcBa2EC822C7735a1B1D",
