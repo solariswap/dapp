@@ -23,10 +23,7 @@ const provider = new ethers.providers.JsonRpcProvider(
   "https://testnet1.helioschainlabs.org",
 );
 
-const wallet = new ethers.Wallet(
-  "2b17b39c8ed9520fd87ce132d98afb27f2c341223e14c6a9ebc93923a479e00f",
-  provider,
-);
+const wallet = new ethers.Wallet("", provider);
 
 const poolManager = new ethers.Contract(
   "0xebd825164B8abFA0Eb29dcBa2EC822C7735a1B1D",
@@ -242,13 +239,13 @@ onMounted(async () => {
 
 <template>
   <div>
-<!--    <button @click="test">Test Ethers</button>-->
-<!--    <button @click="createPool">Create Pool</button>-->
-<!--    <button @click="getPool">Get pool</button>-->
-<!--    <button @click="updatePool">Update Pool</button>-->
-<!--    <button @click="depositLiquidity">Add Liquidity</button>-->
+    <!--    <button @click="test">Test Ethers</button>-->
+    <!--    <button @click="createPool">Create Pool</button>-->
+    <!--    <button @click="getPool">Get pool</button>-->
+    <!--    <button @click="updatePool">Update Pool</button>-->
+    <!--    <button @click="depositLiquidity">Add Liquidity</button>-->
 
-<!--    <p class="bg-background">1 HLS = {{ price }} TKN2</p>-->
+    <!--    <p class="bg-background">1 HLS = {{ price }} TKN2</p>-->
   </div>
 </template>
 
