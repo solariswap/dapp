@@ -6,6 +6,10 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ["@nuxt/eslint", "@nuxt/fonts", "@nuxt/icon", "@pinia/nuxt"],
 
+  nitro: {
+    preset: "netlify",
+  },
+
   css: [
     "~/assets/css/fonts.css",
     "~/assets/css/tailwind.css",
