@@ -31,17 +31,17 @@ onMounted(() => {
 
 <template>
   <div
-    class="fixed inset-0 grid place-items-end laptop:place-items-center z-[999] overflow-y-auto lapyop:py-xl laptop:px-md bg-gray-900/50"
+    class="fixed inset-0 flex place-items-end laptop:place-items-center z-[999] laptop:p-md bg-gray-900/50"
     role="alertdialog"
     @click.exact="close"
   >
     <div
       :data-state="state"
       @click.stop
-      class="shadow-xl rounded-t-lg laptop:rounded-lg border border-border bg-card w-full overflow-hidden mx-auto modal-container max-h-[75svh] h-full laptop:h-auto laptop:min-h-auto"
+      class="shadow-xl rounded-t-lg laptop:rounded-lg border border-border bg-card w-full mx-auto modal-container laptop:max-h-auto laptop:min-h-auto flex flex-col overflow-hidden"
       :style="{ maxWidth: `${maxWidth}px` }"
     >
-      <div class="p-md">
+      <div class="p-md flex flex-col h-full">
         <slot></slot>
       </div>
     </div>

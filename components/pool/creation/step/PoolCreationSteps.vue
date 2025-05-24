@@ -1,11 +1,19 @@
 <script setup lang="ts">
+import { usePoolCreationStore } from "~/store/pool-creation.store";
+
+const poolCreationStore = usePoolCreationStore();
+
 const steps = [
   { name: "Select token & fee tier" },
   { name: "Set initial price" },
   { name: "Deposit initial liquidity" },
 ];
 
-const value = ref(0);
+const setStep = (step: number) => {
+  if (poolCreationStore.state.step > step) {
+    poolCreationStore.state.step = step;
+  }
+};
 </script>
 
 <template>
@@ -13,10 +21,11 @@ const value = ref(0);
     <PoolCreationStep
       v-for="(step, k) in steps"
       :key="`step-${k}`"
-      :active="value === k"
-      :completed="value < k"
+      :active="poolCreationStore.state.step === k"
+      :completed="poolCreationStore.state.step > k"
       :last="k + 1 === steps.length"
       :index="k + 1"
+      @click="setStep(k)"
     >
       {{ step.name }}
     </PoolCreationStep>

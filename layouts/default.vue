@@ -3,6 +3,15 @@ import NavigationBar from "~/components/layout/NavigationBar.vue";
 import { useModalStore } from "~/store/layout/modal.store";
 
 const modalStore = useModalStore();
+
+watch(
+  () => modalStore.opened,
+  (after) => {
+    document
+      .querySelector("body")
+      ?.setAttribute("data-popup-opened", String(after));
+  },
+);
 </script>
 
 <template>

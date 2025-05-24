@@ -10,7 +10,7 @@ defineProps<{
       v-if="src"
       :src
       alt="Currency Image"
-      class="rounded-full object-cover w-full"
+      class="rounded-full object-contain w-full h-full"
     />
   </div>
 </template>

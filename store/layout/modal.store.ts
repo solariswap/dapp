@@ -1,24 +1,23 @@
-type ModalStoreState = {
-  props?: Record<string, unknown>;
-};
-
 export const useModalStore = defineStore("modalStore", () => {
-  const state = ref<ModalStoreState>({});
+  const props = shallowRef<Record<string, unknown>>();
   const component = shallowRef<object>();
 
   const close = () => {
     component.value = undefined;
   };
 
-  const open = (comp: object, props?: Record<string, unknown>) => {
+  const open = (comp: object, properties?: Record<string, unknown>) => {
     component.value = comp;
-    state.value.props = props;
+    props.value = properties;
   };
+
+  const opened = computed(() => !!component.value);
 
   return {
     component,
-    state,
+    props,
     close,
     open,
+    opened,
   };
 });

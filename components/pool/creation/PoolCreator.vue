@@ -2,8 +2,11 @@
 import { usePoolCreationStore } from "~/store/pool-creation.store";
 import PoolTokensAndFeeInput from "~/components/pool/creation/input/PoolTokensAndFeeInput.vue";
 import PoolCreationSteps from "~/components/pool/creation/step/PoolCreationSteps.vue";
+import PoolInitialPriceInput from "~/components/pool/creation/input/PoolInitialPriceInput.vue";
 
 const store = usePoolCreationStore();
+
+const stepComponents = [PoolTokensAndFeeInput, PoolInitialPriceInput];
 </script>
 
 <template>
@@ -12,7 +15,7 @@ const store = usePoolCreationStore();
       <PoolCreationSteps />
     </div>
     <div class="laptop:col-span-4">
-      <PoolTokensAndFeeInput />
+      <component :is="stepComponents[store.state.step]" />
     </div>
   </div>
 </template>

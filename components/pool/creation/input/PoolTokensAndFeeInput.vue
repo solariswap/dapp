@@ -1,14 +1,41 @@
 <script setup lang="ts">
 import FormInput from "~/components/base/form/FormInput.vue";
-import CurrencySelector from "~/components/base/input/CurrencySelector.vue";
+import CurrencySelector from "~/components/base/input/currency/CurrencySelector.vue";
 import Card from "~/components/layout/Card.vue";
 import PoolFeeInput from "~/components/pool/creation/input/PoolFeeInput.vue";
 import Label from "~/components/base/form/Label.vue";
 import Button from "~/components/base/input/Button.vue";
 import Form from "~/components/base/form/Form.vue";
 import { usePoolCreationStore } from "~/store/pool-creation.store";
+import Tooltip from "~/components/layout/tooltip/Tooltip.vue";
 
 const poolCreationStore = usePoolCreationStore();
+
+watch(
+  () => poolCreationStore.state.currency0,
+  (after) => {
+    if (!after) return;
+    if (after?.address === poolCreationStore.state.currency1?.address)
+      poolCreationStore.state.currency1 = undefined;
+  },
+);
+
+watch(
+  () => poolCreationStore.state.currency1,
+  (after) => {
+    if (!after) return;
+    if (after?.address === poolCreationStore.state.currency0?.address)
+      poolCreationStore.state.currency0 = undefined;
+  },
+);
+
+const buttonDisabled = computed(() => {
+  return (
+    !poolCreationStore.state.currency0 ||
+    !poolCreationStore.state.currency1 ||
+    !poolCreationStore.state.poolFee
+  );
+});
 </script>
 
 <template>
@@ -32,14 +59,27 @@ const poolCreationStore = usePoolCreationStore();
             />
           </FormInput>
           <FormInput>
-            <Label for="pool-fee">Pool Fee</Label>
+            <Label for="pool-fee">
+              Pool Fee
+              <Tooltip>
+                <template #tooltip>
+                  How much fees you'll get at each swap
+                </template>
+              </Tooltip>
+            </Label>
             <div class="overflow-auto w-full">
-              <PoolFeeInput />
+              <PoolFeeInput v-model="poolCreationStore.state.poolFee" />
             </div>
           </FormInput>
         </Form>
         <template #footer>
-          <Button class="w-full"> Continue </Button>
+          <Button
+            :disabled="buttonDisabled"
+            class="w-full"
+            @click="poolCreationStore.nextStep"
+          >
+            Continue
+          </Button>
         </template>
       </Card>
     </template>
