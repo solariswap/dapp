@@ -1,5 +1,6 @@
 :root {
     --nav-height: 105px;
+    --nav-height-margin: calc(var(--nav-height) + var(--spacing-xl));
 }
 
 @media screen and (max-width: 1024px) {

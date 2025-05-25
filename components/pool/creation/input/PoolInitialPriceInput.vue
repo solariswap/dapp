@@ -12,8 +12,20 @@ import Hint from "~/components/base/form/Hint.vue";
 import Tick from "~/components/layout/Tick.vue";
 import Tooltip from "~/components/layout/tooltip/Tooltip.vue";
 import InlineInput from "~/components/base/input/InlineInput.vue";
+import PriceRangeSelector from "~/components/pool/creation/range/PriceRangeSelector.vue";
+import Button from "~/components/base/input/Button.vue";
+import Tip from "~/components/layout/Tip.vue";
+import { usePoolPrice } from "~/composables/pools/use-pool-price.composable";
+import MarketPriceRecommandation from "~/components/pool/creation/summary/MarketPriceRecommandation.vue";
 
 const store = usePoolCreationStore();
+const poolPrice = usePoolPrice();
+
+const marketPrice = await poolPrice.getQuote(
+  store.state.currency0?.symbol,
+  store.state.currency1?.symbol,
+);
+if (marketPrice) store.state.initialPrice = marketPrice;
 
 const tabListItems = computed((): TabListItem[] => [
   { label: `${store.state.currency0?.symbol} Price`, value: "base_price" },
@@ -25,14 +37,12 @@ const priceRangeOptions: InlineInputOption<string>[] = [
   { label: "Custom", value: "concentrated" },
 ];
 
-const initialPriceTrailing = computed(() => {
-  const symbol0 = store.state.currency0?.symbol;
-  const symbol1 = store.state.currency1?.symbol;
-
-  const way = store.state.basePrice === "base_price" ? 1 : 0;
-
-  return `${way ? symbol0 : symbol1} per ${way ? symbol1 : symbol0}`;
-});
+const tips = [
+  "• Narrower ranges earn more fees but have higher risk of going out of range",
+  "• Wider ranges are safer but earn fewer fees when in range",
+  "• Consider the volatility of this token pair when setting your range",
+  "• Starting close to market price is recommended for new positions",
+];
 </script>
 
 <template>
@@ -50,6 +60,10 @@ const initialPriceTrailing = computed(() => {
               class="w-min"
             />
           </FormInput>
+          <MarketPriceRecommandation
+            :market-price="marketPrice"
+            @click="store.state.initialPrice = marketPrice"
+          />
           <FormInput>
             <Label for="initial-price">
               Initial Price
@@ -66,9 +80,7 @@ const initialPriceTrailing = computed(() => {
               :min="0"
               :step="0.001"
             >
-              <template #trailing>
-                {{ initialPriceTrailing }}
-              </template>
+              <template #trailing>{{ store.priceLabel }}</template>
             </NumberInput>
             <p class="flex items-center justify-between gap-xs">
               <Hint>
@@ -85,7 +97,33 @@ const initialPriceTrailing = computed(() => {
               v-model="store.state.liquidityType"
             />
           </FormInput>
+          <PriceRangeSelector
+            v-if="store.state.liquidityType === 'concentrated'"
+          />
+          <Tip>
+            Price Range Tips:
+            <ul class="grid gap-1 mt-1">
+              <li v-for="tip in tips" :key="tip">
+                {{ tip }}
+              </li>
+            </ul>
+          </Tip>
         </Form>
+        <template #footer>
+          <div class="flex items-center gap-sm">
+            <Button
+              class="flex-1"
+              type="button"
+              color="reverse"
+              @click="store.state.step--"
+            >
+              Previous
+            </Button>
+            <Button class="flex-1" type="button" @click="store.state.step++">
+              Continue
+            </Button>
+          </div>
+        </template>
       </Card>
     </template>
   </PoolCreationInput>

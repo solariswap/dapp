@@ -12,7 +12,7 @@ const stepComponents = [PoolTokensAndFeeInput, PoolInitialPriceInput];
 <template>
   <div class="grid laptop:grid-cols-6 gap-md">
     <div class="laptop:col-span-2">
-      <PoolCreationSteps />
+      <PoolCreationSteps class="sticky top-(--nav-height-margin)" />
     </div>
     <div class="laptop:col-span-4">
       <component :is="stepComponents[store.state.step]" />

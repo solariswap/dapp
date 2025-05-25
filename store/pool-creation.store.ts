@@ -8,7 +8,7 @@ type StoreState = {
   initialPrice: number;
   basePrice: "base_price" | "quote_price";
   liquidityType: "full" | "concentrated";
-  priceRange?: [number, number];
+  priceRange: [number, number];
 };
 
 export const usePoolCreationStore = defineStore("poolCreationStore", () => {
@@ -17,6 +17,7 @@ export const usePoolCreationStore = defineStore("poolCreationStore", () => {
     initialPrice: 1,
     basePrice: "base_price",
     liquidityType: "full",
+    priceRange: [0, 0],
   });
 
   const nextStep = () => {
@@ -27,5 +28,14 @@ export const usePoolCreationStore = defineStore("poolCreationStore", () => {
     return `${state.value.currency0?.symbol} / ${state.value.currency1?.symbol}`;
   });
 
-  return { state, nextStep, poolName };
+  const priceLabel = computed(() => {
+    const symbol0 = state.value.currency0?.symbol;
+    const symbol1 = state.value.currency1?.symbol;
+
+    const way = state.value.basePrice === "base_price" ? 1 : 0;
+
+    return `${way ? symbol0 : symbol1} per ${way ? symbol1 : symbol0}`;
+  });
+
+  return { state, nextStep, poolName, priceLabel };
 });
