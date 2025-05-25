@@ -10,7 +10,7 @@ const feeOptions: InlineInputOption<number>[] = [
   { label: "0.02%", value: 0.02 },
 ];
 
-const model = ref<InlineInputOption<number>>(feeOptions[0]);
+const model = ref<number>(feeOptions[0].value);
 </script>
 
 <template>

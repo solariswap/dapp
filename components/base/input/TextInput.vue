@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   icon?: string;
   placeholder?: string;
 }>();
@@ -21,7 +21,7 @@ const model = defineModel<string>();
       type="text"
       v-model="model"
       :placeholder
-      class="px-3 py-2 text-sm flex-1 w-full focus:outline-none placeholder:text-muted-foreground pl-11"
+      class="px-3 py-2 flex-1 w-full focus:outline-none placeholder:text-muted-foreground pl-11 bg-background min-h-12 text-lg"
     />
   </div>
 </template>

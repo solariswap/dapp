@@ -11,3 +11,8 @@ export type TokenCurrency = {
   popular?: boolean;
   logoURI?: string;
 };
+
+export type TabListItem = {
+  label: string;
+  value: string;
+};

@@ -3,6 +3,7 @@ import { usePoolCreationStore } from "~/store/pool-creation.store";
 import Card from "~/components/layout/Card.vue";
 import CurrencyImage from "~/components/pool/CurrencyImage.vue";
 import SquareButton from "~/components/base/input/SquareButton.vue";
+import Tick from "~/components/layout/Tick.vue";
 
 const store = usePoolCreationStore();
 
@@ -25,6 +26,7 @@ const imageCls = "w-10 h-10";
           />
         </div>
         <p class="font-bold">{{ store.poolName }}</p>
+        <Tick class="text-sm">Fee {{ store.state.poolFee }}%</Tick>
       </div>
       <SquareButton @click="store.state.step = 0">
         <Icon name="mdi:edit" />

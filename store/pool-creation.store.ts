@@ -5,11 +5,18 @@ type StoreState = {
   currency0?: TokenCurrency;
   currency1?: TokenCurrency;
   poolFee?: number;
+  initialPrice: number;
+  basePrice: "base_price" | "quote_price";
+  liquidityType: "full" | "concentrated";
+  priceRange?: [number, number];
 };
 
 export const usePoolCreationStore = defineStore("poolCreationStore", () => {
   const state = ref<StoreState>({
     step: 0,
+    initialPrice: 1,
+    basePrice: "base_price",
+    liquidityType: "full",
   });
 
   const nextStep = () => {

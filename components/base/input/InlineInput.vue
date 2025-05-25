@@ -5,7 +5,7 @@ const props = defineProps<{
   options: InlineInputOption[];
 }>();
 
-const model = defineModel<(typeof props.options)[number]>();
+const model = defineModel<(typeof props.options)[number]["value"]>();
 </script>
 
 <template>
@@ -13,14 +13,13 @@ const model = defineModel<(typeof props.options)[number]>();
     <button
       v-for="option in options"
       :key="`inline-input-${option.value}`"
+      :aria-selected="model === option.value"
       type="button"
-      class="card p-2 text-center flex-1 bg-background cursor-pointer"
+      class="card p-2 text-center flex-1 bg-background cursor-pointer font-medium aria-selected:bg-primary aria-selected:text-primary-foreground"
       :class="{
-        'bg-primary text-primary-foreground font-medium':
-          model?.value === option.value,
-        'hover:bg-accent': model?.value !== option.value,
+        'hover:bg-accent': model !== option.value,
       }"
-      @click="model = option"
+      @click="model = option.value"
     >
       {{ option.label }}
     </button>
