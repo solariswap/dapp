@@ -34,6 +34,7 @@ const decrease = () => {
     <input
       type="number"
       class="outline-none min-h-12 flex-1 text-center px-md"
+      step=".00001"
       v-model.number="model"
     />
     <button
@@ -46,15 +47,4 @@ const decrease = () => {
   </div>
 </template>
 
-<style scoped>
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input[type="number"] {
-  -moz-appearance: textfield;
-}
-</style>
+<style scoped></style>

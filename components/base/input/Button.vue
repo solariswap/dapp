@@ -4,7 +4,9 @@ import { NuxtLink } from "#components";
 const props = withDefaults(
   defineProps<{
     to?: ReturnType<typeof useRoute> | string;
-    color?: "default" | "reverse" | "blue";
+    color?: "default" | "reverse" | "blue" | "red";
+    iconClass?: string;
+    iconSize?: number;
     disabled?: boolean;
     loading?: boolean;
     leadingIcon?: string;
@@ -43,6 +45,8 @@ const btnClass = computed(() => {
       props.color === "reverse",
     "bg-background border border-blue-500/30 hover:bg-blue-500/10":
       props.color === "blue",
+    "bg-background border border-red-500/30 hover:bg-red-500/10":
+      props.color === "red",
   };
 });
 </script>
@@ -54,9 +58,19 @@ const btnClass = computed(() => {
     class="button font-medium cursor-pointer py-2 px-4 rounded flex items-center justify-center gap-2 disabled:cursor-not-allowed disabled:opacity-50"
     :class="btnClass"
   >
-    <Icon v-if="leadingIcon" :name="leadingIcon" />
+    <Icon
+      v-if="leadingIcon"
+      :class="iconClass"
+      :size="iconSize"
+      :name="leadingIcon"
+    />
     <span><slot /></span>
-    <Icon v-if="trailingIcon" :name="trailingIcon" />
+    <Icon
+      v-if="trailingIcon"
+      :class="iconClass"
+      :size="iconSize"
+      :name="trailingIcon"
+    />
   </component>
 </template>
 

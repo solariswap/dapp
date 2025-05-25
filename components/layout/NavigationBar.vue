@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import Button from "~/components/base/input/Button.vue";
+import { useAppKitAccount } from "@reown/appkit/vue";
+import WalletConnectButton from "~/components/base/web3/button/WalletConnectButton.vue";
+
+const { $modal } = useNuxtApp();
+const account = useAppKitAccount();
 
 const expanded = ref(false);
 
@@ -17,6 +22,11 @@ const routes = [
   { name: "Swap", path: "/" },
   { name: "Pools", path: "/pools" },
 ];
+
+const openWallet = () => {
+  console.log(account.value);
+  // $modal.open();
+};
 </script>
 
 <template>
@@ -50,9 +60,7 @@ const routes = [
           class="flex flex-col laptop:flex-row laptop:items-center gap-sm laptop:ml-auto"
         >
           <li>
-            <Button class="w-full laptop:w-auto" leading-icon="lucide:wallet">
-              Connect Wallet
-            </Button>
+            <WalletConnectButton class="w-full" />
           </li>
         </ul>
       </div>

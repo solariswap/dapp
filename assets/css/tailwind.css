@@ -22,6 +22,8 @@
   --color-card-foreground: var(--color-card-foreground);
   --color-input: var(--color-input);
   --color-ring: var(--color-ring);
+  --color-popover: var(--color-popover);
+  --color-popover-foreground: var(--color-popover-foreground);
 
   --spacing-xs: 0.5rem; /* 8px */
   --spacing-sm: 1rem; /* 16px */

@@ -17,6 +17,7 @@ import Button from "~/components/base/input/Button.vue";
 import Tip from "~/components/layout/Tip.vue";
 import { usePoolPrice } from "~/composables/pools/use-pool-price.composable";
 import MarketPriceRecommandation from "~/components/pool/creation/summary/MarketPriceRecommandation.vue";
+import Error from "~/components/layout/Error.vue";
 
 const store = usePoolCreationStore();
 const poolPrice = usePoolPrice();
@@ -25,7 +26,14 @@ const marketPrice = await poolPrice.getQuote(
   store.state.currency0?.symbol,
   store.state.currency1?.symbol,
 );
-if (marketPrice) store.state.initialPrice = marketPrice;
+if (marketPrice) store.initMarketPrice(marketPrice);
+
+watch(
+  () => store.state.initialPrice,
+  (after) => {
+    store.initMarketPrice(after);
+  },
+);
 
 const tabListItems = computed((): TabListItem[] => [
   { label: `${store.state.currency0?.symbol} Price`, value: "base_price" },
@@ -43,6 +51,10 @@ const tips = [
   "• Consider the volatility of this token pair when setting your range",
   "• Starting close to market price is recommended for new positions",
 ];
+
+const isDisabled = computed(() => {
+  return store.errors.length > 0;
+});
 </script>
 
 <template>
@@ -108,6 +120,9 @@ const tips = [
               </li>
             </ul>
           </Tip>
+          <Error v-for="error in store.errors" :key="error">
+            {{ error }}
+          </Error>
         </Form>
         <template #footer>
           <div class="flex items-center gap-sm">
@@ -119,7 +134,12 @@ const tips = [
             >
               Previous
             </Button>
-            <Button class="flex-1" type="button" @click="store.state.step++">
+            <Button
+              :disabled="isDisabled"
+              class="flex-1"
+              type="button"
+              @click="store.state.step++"
+            >
               Continue
             </Button>
           </div>

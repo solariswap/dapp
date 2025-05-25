@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import tailwindcss from "@tailwindcss/vite";
+import { NodeGlobalsPolyfillPlugin } from "@esbuild-plugins/node-globals-polyfill";
+import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfill";
 
 export default defineNuxtConfig({
   compatibilityDate: "2025-05-15",
@@ -24,9 +26,17 @@ export default defineNuxtConfig({
   },
 
   vite: {
+    define: { global: "globalThis" },
     plugins: [tailwindcss()],
     optimizeDeps: {
       include: ["ethers"],
+      esbuildOptions: {
+        define: { global: "globalThis" },
+        plugins: [
+          NodeGlobalsPolyfillPlugin({ process: true, buffer: true }),
+          NodeModulesPolyfillPlugin(),
+        ],
+      },
     },
   },
 });
