@@ -32,6 +32,10 @@ watch(
   () => store.state.initialPrice,
   (after) => {
     store.initMarketPrice(after);
+
+    if (store.state.currency0Amount) {
+      store.state.currency1Amount = after * store.state.currency0Amount;
+    }
   },
 );
 

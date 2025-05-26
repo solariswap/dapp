@@ -70,6 +70,12 @@ export const usePoolCreationStore = defineStore("poolCreationStore", () => {
     return state.value.currency1?.symbol;
   });
 
+  const priceRange = computed(() => {
+    if (state.value.liquidityType === "full") return "Full range";
+
+    return `${state.value.priceRange[0].toPrecision(6)} - ${state.value.priceRange[1].toPrecision(6)} ${priceLabel.value}`;
+  });
+
   return {
     state,
     nextStep,
@@ -79,5 +85,6 @@ export const usePoolCreationStore = defineStore("poolCreationStore", () => {
     errors,
     symbol0,
     symbol1,
+    priceRange,
   };
 });

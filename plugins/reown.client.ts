@@ -34,6 +34,8 @@ export default defineNuxtPlugin(() => {
     projectId,
     features: {
       analytics: true, // Optional - defaults to your Cloud configuration
+      socials: false,
+      email: false,
     },
   });
 
