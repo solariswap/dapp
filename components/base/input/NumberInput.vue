@@ -5,6 +5,7 @@ const props = defineProps<{
   step?: number;
   min?: number;
   max?: number;
+  inputId?: string;
 }>();
 
 const model = defineModel<number>();
@@ -34,6 +35,7 @@ const hasTrailing = !!slots.trailing;
       type="number"
       v-model.number="model"
       :placeholder="placeholder"
+      :id="inputId"
       :step="step"
       :min="min"
       :max="max"

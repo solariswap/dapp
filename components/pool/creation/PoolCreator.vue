@@ -3,10 +3,15 @@ import { usePoolCreationStore } from "~/store/pool-creation.store";
 import PoolTokensAndFeeInput from "~/components/pool/creation/input/PoolTokensAndFeeInput.vue";
 import PoolCreationSteps from "~/components/pool/creation/step/PoolCreationSteps.vue";
 import PoolInitialPriceInput from "~/components/pool/creation/input/PoolInitialPriceInput.vue";
+import PoolCreationDepositInput from "~/components/pool/creation/input/PoolCreationDepositInput.vue";
 
 const store = usePoolCreationStore();
 
-const stepComponents = [PoolTokensAndFeeInput, PoolInitialPriceInput];
+const stepComponents = [
+  PoolTokensAndFeeInput,
+  PoolInitialPriceInput,
+  PoolCreationDepositInput,
+];
 </script>
 
 <template>

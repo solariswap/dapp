@@ -23,8 +23,8 @@ const store = usePoolCreationStore();
 const poolPrice = usePoolPrice();
 
 const marketPrice = await poolPrice.getQuote(
-  store.state.currency0?.symbol,
-  store.state.currency1?.symbol,
+  store.state.currency0?.symbol ?? "",
+  store.state.currency1?.symbol ?? "",
 );
 if (marketPrice) store.initMarketPrice(marketPrice);
 
