@@ -16,3 +16,8 @@ export type TabListItem = {
   label: string;
   value: string;
 };
+
+export type TokenAmountModel = {
+  currency: TokenCurrency;
+  amount?: number;
+};
