@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import NavigationBar from "~/components/layout/NavigationBar.vue";
 import { useModalStore } from "~/store/layout/modal.store";
+import FooterBar from "~/components/layout/FooterBar.vue";
 
 const modalStore = useModalStore();
 
@@ -23,6 +24,7 @@ watch(
     >
       <slot />
     </div>
+    <FooterBar />
 
     <teleport to="body">
       <component v-if="modalStore.component" :is="modalStore.component" />
