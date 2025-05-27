@@ -20,7 +20,7 @@ watch(
     <NavigationBar />
     <div
       id="app"
-      class="min-h-screen mt-(--nav-height) py-xl max-w-desktop mx-auto px-md desktop:px-0"
+      class="min-h-screen py-(--nav-height-margin) max-w-desktop mx-auto px-md desktop:px-0 flex flex-col h-full"
     >
       <slot />
     </div>

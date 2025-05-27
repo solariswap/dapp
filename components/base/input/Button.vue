@@ -39,7 +39,7 @@ const attrs = computed(() => {
 
 const btnClass = computed(() => {
   return {
-    "bg-primary hover:bg-primary/80 text-primary-foreground":
+    "bg-gradient-to-r from-yellow-400 to-orange-400 hover:from-yellow-500 hover:to-orange-500 text-black font-medium":
       props.color === "default",
     "bg-background hover:bg-accent hover:text-accent-foreground border border-border":
       props.color === "reverse",

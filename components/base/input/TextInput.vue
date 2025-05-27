@@ -20,6 +20,7 @@ const model = defineModel<string>();
     <input
       type="text"
       v-model="model"
+      v-bind="$attrs"
       :placeholder
       class="px-3 py-2 flex-1 w-full focus:outline-none placeholder:text-muted-foreground pl-11 bg-background min-h-12 text-lg"
     />
