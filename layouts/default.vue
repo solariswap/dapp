@@ -4,6 +4,9 @@ import { useModalStore } from "~/store/layout/modal.store";
 import FooterBar from "~/components/layout/FooterBar.vue";
 
 const modalStore = useModalStore();
+const colorMode = useColorMode();
+
+colorMode.preference = "dark";
 
 watch(
   () => modalStore.opened,
