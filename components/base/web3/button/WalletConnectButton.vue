@@ -39,10 +39,10 @@ const address = computed(() => account.value.address);
     </Button>
     <Button
       v-else
-      leading-icon="mdi:record-circle"
+      leading-icon="mdi:circle"
       icon-class="text-green-500"
+      :icon-size="12"
       type="button"
-      color="blue"
       class="w-full laptop:w-auto"
       @focusin="focusIn"
       @focusout="focusOut"
