@@ -9,7 +9,7 @@ const balance = ref<bigint>();
 
 const balanceVisible = computed(() => !!model.value.currency);
 const balanceLabel = computed(() => {
-  if (!balance.value) return `0 ${model.value.currency.symbol}`;
+  if (!balance.value) return `Balance: 0 ${model.value.currency.symbol}`;
 
   return `Balance: ${Number(balance.value).toFixed(2)} ${model.value.currency.symbol}`;
 });
