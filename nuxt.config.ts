@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     "@nuxt/fonts",
     "@nuxt/icon",
     "@pinia/nuxt",
-    // "@nuxt/ui",
+    "@nuxt/ui",
   ],
 
   nitro: {

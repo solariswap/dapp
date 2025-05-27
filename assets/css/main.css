@@ -15,7 +15,7 @@ body {
 }
 
 button, div, input, label, p, span, a {
-    transition: color, background-color linear 0.2s;
+    transition: color, background-color, border-color linear 0.2s;
 }
 
 body[data-popup-opened="true"] {
