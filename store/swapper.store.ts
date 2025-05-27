@@ -1,20 +1,33 @@
-import type { TokenCurrency } from "~/utils/type/base.type";
+import type { TokenAmountModel, TokenCurrency } from "~/utils/type/base.type";
+import { currencies } from "~/utils/constant/currency.constant";
 
 type StoreState = {
-  currency0?: TokenCurrency;
-  currency1?: TokenCurrency;
+  model0: TokenAmountModel;
+  model1: TokenAmountModel;
 
-  amount0: number;
-  amount1: number;
+  slippageTolerance: number;
+  deadline: number;
 };
 
 export const useSwapperStore = defineStore("swapperStore", () => {
   const state = ref<StoreState>({
-    amount0: 0,
-    amount1: 0,
+    model0: {
+      currency: currencies[0],
+    },
+    model1: {
+      currency: currencies[1],
+    },
+    slippageTolerance: 0.005,
+    deadline: 20,
+  });
+
+  const slippageTolerance = computed(() => {
+    return (state.value.slippageTolerance * 100).toFixed(2) + "%";
   });
 
   return {
     state,
+
+    slippageTolerance,
   };
 });

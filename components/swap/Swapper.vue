@@ -5,14 +5,16 @@ import TokenAmountInput from "~/components/base/input/TokenAmountInput.vue";
 import type { TokenAmountModel } from "~/utils/type/base.type";
 import { currencies } from "~/utils/constant/currency.constant";
 import Button from "~/components/base/input/Button.vue";
+import { useSwapperStore } from "~/store/swapper.store";
+import { useModalStore } from "~/store/layout/modal.store";
+import SwapperSettingsModal from "~/components/swap/modal/SwapperSettingsModal.vue";
 
-const model0 = ref<TokenAmountModel>({
-  currency: currencies[0],
-});
+const store = useSwapperStore();
+const modalStore = useModalStore();
 
-const model1 = ref<TokenAmountModel>({
-  currency: currencies[1],
-});
+const openSettings = () => {
+  modalStore.open(SwapperSettingsModal);
+};
 </script>
 
 <template>
@@ -20,9 +22,11 @@ const model1 = ref<TokenAmountModel>({
     <div class="flex flex-col gap-4">
       <div class="flex items-center gap-2 justify-between text-lg font-medium">
         <p>Swap</p>
-        <SquareButton><Icon name="lucide:settings" /></SquareButton>
+        <SquareButton @click="openSettings">
+          <Icon name="lucide:settings" />
+        </SquareButton>
       </div>
-      <TokenAmountInput v-model="model0">From</TokenAmountInput>
+      <TokenAmountInput v-model="store.state.model0"> From </TokenAmountInput>
       <div class="flex items-center justify-center -my-6 relative">
         <div
           class="rounded-full aspect-square w-10 gap-2 grid place-items-center bg-gradient-to-r from-yellow-500 to-orange-500"
@@ -30,24 +34,8 @@ const model1 = ref<TokenAmountModel>({
           <Icon name="lucide:arrow-down" />
         </div>
       </div>
-      <TokenAmountInput v-model="model1">To</TokenAmountInput>
-      <div
-        class="rounded p-sm bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-rose-500/10 border border-purple-500/20"
-      >
-        <div class="flex flex-col gap-1 font-medium text-sm">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-muted-foreground">Price</p>
-            <p class="text-purple-400">
-              1 {{ model0.currency.symbol }} = 0.543
-              {{ model1.currency.symbol }}
-            </p>
-          </div>
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-muted-foreground">Slippage tolerance</p>
-            <p class="text-purple-400">0.5%</p>
-          </div>
-        </div>
-      </div>
+      <TokenAmountInput v-model="store.state.model1"> To </TokenAmountInput>
+      <SwapSummary />
       <Button>Swap</Button>
     </div>
   </Card>
