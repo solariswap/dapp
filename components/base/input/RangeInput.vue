@@ -22,7 +22,7 @@ const percent = computed(() => {
       :max
       :step
       :id="inputId"
-      v-model="model"
+      v-model.number="model"
       class="flex-1"
     />
     <div v-if="slots.preview" class="bg-muted px-3 py-1 rounded-md text-center">
