@@ -5,7 +5,9 @@ import PoolsStatistics from "~/components/pool/statistics/PoolsStatistics.vue";
 
 <template>
   <div>
-    <div class="flex justify-between items-start gap-2">
+    <div
+      class="flex flex-col laptop:flex-row justify-between items-start gap-sm laptop:gap-2"
+    >
       <div class="">
         <h1
           class="text-3xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent"
@@ -16,7 +18,13 @@ import PoolsStatistics from "~/components/pool/statistics/PoolsStatistics.vue";
           Provide liquidity and earn fees from trades
         </p>
       </div>
-      <Button leading-icon="mdi:plus" to="/pools/create">Create Pool</Button>
+      <Button
+        class="w-full laptop:w-auto"
+        leading-icon="mdi:plus"
+        to="/pools/create"
+      >
+        Create Pool
+      </Button>
     </div>
     <PoolsStatistics class="mt-6" />
   </div>
