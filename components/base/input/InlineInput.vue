@@ -9,7 +9,7 @@ const model = defineModel<(typeof props.options)[number]["value"]>();
 </script>
 
 <template>
-  <div class="flex items-center gap-2">
+  <div class="flex items-center gap-2 overflow-auto">
     <button
       v-for="option in options"
       :key="`inline-input-${option.value}`"
