@@ -22,6 +22,15 @@ export type TokenAmountModel = {
   amount?: number;
 };
 
+export type StatsCard = {
+  name: string;
+  value: string;
+  footer: string;
+  direction: "down" | "up";
+  class: string;
+  titleClass: string;
+};
+
 export type Pool = {
   id: string;
   token0: TokenCurrency;

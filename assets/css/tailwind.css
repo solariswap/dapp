@@ -49,5 +49,9 @@
 @layer base {
   .card {
     @apply rounded-lg border border-border bg-card p-sm;
+
+    &.large {
+      @apply p-md;
+    }
   }
 }
