@@ -18,15 +18,12 @@ const columns: TableColumn<Pool>[] = [
   },
   {
     header: "TVL",
-    accessorKey: "tvl",
   },
   {
     header: "APR",
-    accessorKey: "apr",
   },
   {
     header: "Volume",
-    accessorKey: "volume24h",
   },
   {
     header: "Fee",
