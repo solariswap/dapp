@@ -19,7 +19,10 @@ withDefaults(
 
 <template>
   <div class="flex items-center gap-sm">
-    <CurrencyImage :style="{ width: `${logoSize}px` }" :src="logo" />
+    <CurrencyImage
+      :style="{ width: `${logoSize}px`, height: `${logoSize}px` }"
+      :src="logo"
+    />
     <div class="leading-tight text-left">
       <p>{{ symbol.toUpperCase() }}</p>
       <p v-if="!hideName" class="text-sm text-muted-foreground">{{ name }}</p>

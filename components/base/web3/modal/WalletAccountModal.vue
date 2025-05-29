@@ -8,10 +8,12 @@ const account = useAppKitAccount();
 const web3 = useWeb3();
 
 const address = computed(() => account.value.address);
-const gasBalance = ref<bigint>();
+const gasBalance = ref<number>();
 
 onMounted(async () => {
   const balance = await web3.getBalance(address.value ?? "");
+
+  gasBalance.value = balance.toNumber();
 });
 
 const buttons = [
@@ -56,7 +58,7 @@ const disconnect = () => {
       </p>
       <div class="flex items-center justify-between gap-1 text-xs mt-xs">
         <p>HLS:</p>
-        <p>{{ gasBalance ?? "ERROR" }}</p>
+        <p>{{ gasBalance }}</p>
       </div>
     </div>
     <Separator class="-mx-1 my-1" />

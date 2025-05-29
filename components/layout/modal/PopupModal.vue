@@ -63,5 +63,34 @@ onMounted(() => {
     opacity: 1;
     transform: scale(1);
   }
+
+  @media screen and (max-width: 1024px) {
+    &[data-state="closed"] {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+
+    &[data-state="open"] {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .modal-container {
+    min-height: 70vh;
+    max-height: 90vh;
+
+    &[data-state="closed"] {
+      opacity: 0;
+      transform: translateY(100%);
+    }
+
+    &[data-state="open"] {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 </style>

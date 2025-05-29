@@ -34,9 +34,9 @@ watch(model, (after, before) => {
         type="number"
         v-model="model.amount"
         placeholder="0,0"
-        class="outline-none flex-1 placeholder:text-muted-foreground text-xl"
+        class="outline-none w-full placeholder:text-muted-foreground text-xl"
       />
-      <SmallCurrencySelector v-model="model.currency" />
+      <SmallCurrencySelector v-model="model.currency" class="shrink-0" />
     </div>
   </div>
 </template>

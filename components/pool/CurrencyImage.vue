@@ -5,7 +5,7 @@ defineProps<{
 </script>
 
 <template>
-  <div class="rounded-full aspect-square bg-primary/20 p-1">
+  <div class="rounded-full aspect-square bg-primary/20 p-1 shrink-0">
     <img
       v-if="src"
       :src

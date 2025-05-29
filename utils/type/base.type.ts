@@ -21,3 +21,15 @@ export type TokenAmountModel = {
   currency: TokenCurrency;
   amount?: number;
 };
+
+export type Pool = {
+  id: string;
+  token0: TokenCurrency;
+  token1: TokenCurrency;
+  fee: number;
+  tvl: number;
+  apr: number;
+  volume24h: number;
+  isNew?: boolean;
+  createdAt: Date;
+};

@@ -51,11 +51,13 @@ const select = (currency: TokenCurrency) => {
         ></TextInput>
         <FormInput>
           <Label for="popular-currencies">Popular currencies</Label>
-          <PopularCurrencyInput
-            class="w-full"
-            :currencies="popularTokens"
-            @select="select"
-          />
+          <div class="overflow-auto w-full">
+            <PopularCurrencyInput
+              class="w-full"
+              :currencies="popularTokens"
+              @select="select"
+            />
+          </div>
         </FormInput>
         <div class="h-[1px] w-full bg-border shrink-0"></div>
         <CurrencySelectorList

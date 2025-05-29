@@ -27,6 +27,7 @@ import PoolsStatistics from "~/components/pool/statistics/PoolsStatistics.vue";
       </Button>
     </div>
     <PoolsStatistics class="mt-6" />
+    <PoolListingTable class="w-full mt-6" />
   </div>
 </template>
 

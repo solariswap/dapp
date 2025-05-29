@@ -21,5 +21,10 @@ export default defineAppConfig({
         },
       ],
     },
+    table: {
+      slots: {
+        td: "text-foreground text-base font-bold",
+      },
+    },
   },
 });
