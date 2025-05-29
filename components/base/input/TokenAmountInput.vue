@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { TokenAmountModel } from "~/utils/type/base.type";
-import CurrencySelector from "~/components/base/input/currency/CurrencySelector.vue";
 import SmallCurrencySelector from "~/components/base/input/currency/SmallCurrencySelector.vue";
 
 const model = defineModel<TokenAmountModel>({ required: true });

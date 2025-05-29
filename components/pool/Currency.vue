@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import CurrencyImage from "~/components/pool/CurrencyImage.vue";
-import { trimAddress } from "../../utils/function/address.function";
+import { trimAddress } from "~/utils/function/address.function";
 
 withDefaults(
   defineProps<{
