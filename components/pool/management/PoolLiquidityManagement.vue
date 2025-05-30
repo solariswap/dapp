@@ -2,6 +2,7 @@
 import TabListInput from "~/components/base/input/TabListInput.vue";
 import type { Pool, TabListItem } from "~/utils/type/base.type";
 import PoolAddLiquidity from "~/components/pool/management/liquidity/PoolAddLiquidity.vue";
+import PoolRemoveLiquidity from "~/components/pool/management/liquidity/PoolRemoveLiquidity.vue";
 
 defineProps<{
   pool: Pool;
@@ -23,7 +24,7 @@ const tab = ref<"add-liquidity" | "remove-liquidity">("add-liquidity");
 const tabComponent = computed(() => {
   const map: Record<"add-liquidity" | "remove-liquidity", any> = {
     "add-liquidity": PoolAddLiquidity,
-    "remove-liquidity": PoolAddLiquidity,
+    "remove-liquidity": PoolRemoveLiquidity,
   };
 
   return map[tab.value];

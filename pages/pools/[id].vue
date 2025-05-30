@@ -2,6 +2,8 @@
 import Button from "~/components/base/input/Button.vue";
 import { mockPools } from "~/utils/mock/pools.mock";
 import PoolLiquidityManagement from "~/components/pool/management/PoolLiquidityManagement.vue";
+import PoolUserPosition from "~/components/pool/management/position/PoolUserPosition.vue";
+import PoolComposition from "~/components/pool/management/position/PoolComposition.vue";
 
 const { id } = useRoute().params;
 
@@ -20,11 +22,14 @@ const pool = computed(() => mockPools.find((pool) => pool.id === id));
     </Button>
     <PoolManagementHeader v-if="pool" :pool />
     <PoolManagementStatistics class="w-full" />
-    <div class="grid laptop:grid-cols-3 gap-6">
-      <div class="col-span-2">
-        <PoolLiquidityManagement v-if="pool" :pool />
+    <div v-if="pool" class="grid grid-cols-1 laptop:grid-cols-3 gap-6">
+      <div class="laptop:col-span-2">
+        <PoolLiquidityManagement :pool />
       </div>
-      <div class="col-span-1"></div>
+      <div class="col-span-1 flex flex-col gap-6">
+        <PoolUserPosition :pool />
+        <PoolComposition :pool />
+      </div>
     </div>
   </div>
 </template>

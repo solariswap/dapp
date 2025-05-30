@@ -25,6 +25,8 @@
   --color-ring: var(--color-ring);
   --color-popover: var(--color-popover);
   --color-popover-foreground: var(--color-popover-foreground);
+  --color-destructive: var(--color-destructive);
+  --color-destructive-foreground: var(--color-destructive-foreground);
 
   --spacing-xs: 0.5rem; /* 8px */
   --spacing-sm: 1rem; /* 16px */
