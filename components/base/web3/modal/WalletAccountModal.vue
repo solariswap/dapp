@@ -62,7 +62,7 @@ const disconnect = () => {
       </p>
       <div class="flex items-center justify-between gap-1 text-xs mt-xs">
         <p>HLS:</p>
-        <USkeleton v-if="!gasBalance" class="h-4 w-[50px]" />
+        <USkeleton v-if="gasBalance === undefined" class="h-4 w-[50px]" />
         <p v-else>{{ formatCurrency(gasBalance, "") }}</p>
       </div>
     </div>

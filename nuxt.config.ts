@@ -6,6 +6,7 @@ import { NodeModulesPolyfillPlugin } from "@esbuild-plugins/node-modules-polyfil
 export default defineNuxtConfig({
   compatibilityDate: "2025-05-15",
   devtools: { enabled: true },
+
   modules: [
     "@nuxt/eslint",
     "@nuxt/fonts",
@@ -13,6 +14,16 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@nuxt/ui",
   ],
+
+  runtimeConfig: {
+    public: {
+      rpcUrl: process.env.NUXT_PUBLIC_RPC_URL,
+      chainId: process.env.NUXT_PUBLIC_CHAIN_ID,
+
+      solariPoolManagerAddress:
+        process.env.NUXT_PUBLIC_SOLARI_POOL_MANAGER_ADDRESS,
+    },
+  },
 
   nitro: {
     preset: "netlify",
