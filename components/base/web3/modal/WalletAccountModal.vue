@@ -3,17 +3,20 @@ import { trimAddress } from "~/utils/function/address.function";
 import { useAppKitAccount, useDisconnect } from "@reown/appkit/vue";
 import { useWeb3 } from "~/composables/web3/use-web3.composable";
 import Separator from "~/components/layout/Separator.vue";
+import { ethers } from "ethers";
 
 const account = useAppKitAccount();
 const web3 = useWeb3();
 
 const address = computed(() => account.value.address);
-const gasBalance = ref<number>();
+const gasBalance = ref<string>();
 
 onMounted(async () => {
   const balance = await web3.getBalance(address.value ?? "");
 
-  gasBalance.value = balance.toNumber();
+  gasBalance.value = Number(
+    ethers.utils.formatEther(balance.toBigInt()),
+  ).toFixed(6);
 });
 
 const buttons = [

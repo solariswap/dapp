@@ -62,6 +62,7 @@ const select = (currency: TokenCurrency) => {
         <div class="h-[1px] w-full bg-border shrink-0"></div>
         <CurrencySelectorList
           class="flex-1 overflow-auto"
+          :search-input="searchInput"
           :currencies="filteredCurrencies"
           @select="select"
         />

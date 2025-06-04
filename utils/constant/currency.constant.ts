@@ -4,11 +4,10 @@ export const currencies: TokenCurrency[] = [
   {
     name: "Helios",
     symbol: "HLS",
-    address: "0x00001",
+    address: "0xD4949664cD82660AaE99bEdc034a0deA8A0bd517",
     decimals: 18,
     popular: true,
-    logoURI:
-      "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ethereum_logo_2014.svg/512px-Ethereum_logo_2014.svg.png",
+    logoURI: "/images/token/HLS.jpg",
   },
   {
     name: "Ethereum",

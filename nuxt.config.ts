@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "@nuxt/icon",
     "@pinia/nuxt",
     "@nuxt/ui",
+    "@vueuse/nuxt",
   ],
 
   nitro: {
