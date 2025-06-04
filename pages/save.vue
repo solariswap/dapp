@@ -13,10 +13,10 @@ import {
   Token,
 } from "@uniswap/sdk-core";
 import JSBI from "jsbi";
-import { Actions, Pool, type PoolKey } from "@uniswap/v4-sdk";
+// import { Actions, Pool, type PoolKey } from "@uniswap/v4-sdk";
 import { slice } from "viem";
 import Swapper from "~/components/swap/Swapper.vue";
-
+/*
 const chainId = 42000;
 // const tokenA = new Token(chainId, "", 18, "WHLS", "Wrapped HLS");
 
@@ -71,22 +71,22 @@ const createPool = async () => {
   const token1 = "0x3aeAf44F10201AffBa70f0193E50Bb20BA1adB24";
   const tokens = token0 < token1 ? [token0, token1] : [token1, token0];
 
-  const poolKey: PoolKey = {
-    currency0: tokens[0],
-    currency1: tokens[1],
-    fee: 1000,
-    tickSpacing: 10,
-    hooks: "0x0000000000000000000000000000000000000000",
-  };
-
-  const startingPrice = encodeSqrtRatioX96(1000, 1);
-
-  const response = await poolManager.initialize(
-    poolKey,
-    BigInt(startingPrice as unknown as bigint),
-  );
-
-  console.log(response);
+  // const poolKey: PoolKey = {
+  //   currency0: tokens[0],
+  //   currency1: tokens[1],
+  //   fee: 1000,
+  //   tickSpacing: 10,
+  //   hooks: "0x0000000000000000000000000000000000000000",
+  // };
+  //
+  // const startingPrice = encodeSqrtRatioX96(1000, 1);
+  //
+  // const response = await poolManager.initialize(
+  //   poolKey,
+  //   BigInt(startingPrice as unknown as bigint),
+  // );
+  //
+  // console.log(response);
 };
 
 const getPool = async () => {
@@ -163,59 +163,59 @@ const depositLiquidity = async () => {
 
   const abiCoder = ethers.utils.defaultAbiCoder;
 
-  const poolKey: PoolKey = {
-    currency0: "0x0000000000000000000000000000000000000000",
-    currency1: "0x3aeAf44F10201AffBa70f0193E50Bb20BA1adB24",
-    fee: 1000,
-    tickSpacing: 10,
-    hooks: "0x0000000000000000000000000000000000000000",
-  };
-
-  const encodedParams = abiCoder.encode(
-    [
-      // PoolKey
-      "tuple(address currency0, address currency1, uint24 fee, int24 tickSpacing, address hooks)",
-      "int24",
-      "int24", // tickLower, tickUpper
-      "uint256", // liquidity
-      "uint128",
-      "uint128", // amount0Max, amount1Max
-      "address", // owner
-      "bytes", // hookData
-    ],
-    [
-      [
-        poolKey.currency0,
-        poolKey.currency1,
-        poolKey.fee,
-        poolKey.tickSpacing,
-        poolKey.hooks,
-      ],
-      -60000,
-      60000,
-      ethers.utils.parseUnits("1", 18),
-      ethers.utils.parseUnits("1", 18),
-      ethers.utils.parseUnits("2", 18),
-      await wallet.getAddress(),
-      "0x",
-    ],
+  // const poolKey: PoolKey = {
+  //   currency0: "0x0000000000000000000000000000000000000000",
+  //   currency1: "0x3aeAf44F10201AffBa70f0193E50Bb20BA1adB24",
+  //   fee: 1000,
+  //   tickSpacing: 10,
+  //   hooks: "0x0000000000000000000000000000000000000000",
+  // };
+  //
+  // const encodedParams = abiCoder.encode(
+  //   [
+  //     PoolKey
+      // "tuple(address currency0, address currency1, uint24 fee, int24 tickSpacing, address hooks)",
+      // "int24",
+      // "int24", // tickLower, tickUpper
+      // "uint256", // liquidity
+      // "uint128",
+      // "uint128", // amount0Max, amount1Max
+      // "address", // owner
+      // "bytes", // hookData
+    // ],
+    // [
+    //   [
+    //     poolKey.currency0,
+    //     poolKey.currency1,
+    //     poolKey.fee,
+    //     poolKey.tickSpacing,
+    //     poolKey.hooks,
+    //   ],
+    //   -60000,
+    //   60000,
+    //   ethers.utils.parseUnits("1", 18),
+    //   ethers.utils.parseUnits("1", 18),
+    //   ethers.utils.parseUnits("2", 18),
+    //   await wallet.getAddress(),
+    //   "0x",
+    // ],
   );
 
   // console.log(encodedParams);
-  const unlockData = "0x04" + encodedParams.slice(2);
+  // const unlockData = "0x04" + encodedParams.slice(2);
 
-  console.log(unlockData);
-  const deadline = Math.floor(Date.now() / 1000) + 60 * 10;
+  // console.log(unlockData);
+  // const deadline = Math.floor(Date.now() / 1000) + 60 * 10;
+  //
+  // const tx = await positionManager.modifyLiquidities(unlockData, deadline, {
+  //   gasLimit: 1_000_000,
+  // });
 
-  const tx = await positionManager.modifyLiquidities(unlockData, deadline, {
-    gasLimit: 1_000_000,
-  });
+  // console.log(tx);
+  //
+  // const res = await tx.wait();
 
-  console.log(tx);
-
-  const res = await tx.wait();
-
-  console.log("res", res);
+  // console.log("res", res);
 
   // const tickLower = -60000;
   // const tickUpper = 60000;
@@ -239,7 +239,7 @@ onMounted(async () => {
   const tick = await getPool();
 
   price.value = Math.pow(1.0001, tick);
-});
+});*/
 </script>
 
 <template></template>
