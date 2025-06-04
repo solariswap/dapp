@@ -1,9 +1,9 @@
-export const formatCurrency = (amount: number) => {
+export const formatCurrency = (amount: number, prefix = "$") => {
   if (amount >= 1000000) {
-    return `$${(amount / 1000000).toFixed(1)}M`;
+    return `${prefix}${(amount / 1000000).toFixed(1)}M`;
   }
   if (amount >= 1000) {
-    return `$${(amount / 1000).toFixed(1)}K`;
+    return `${prefix}${(amount / 1000).toFixed(1)}K`;
   }
-  return `$${amount.toFixed(0)}`;
+  return `${prefix}${amount.toFixed(0)}`;
 };

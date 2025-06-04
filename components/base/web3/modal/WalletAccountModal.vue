@@ -4,19 +4,20 @@ import { useAppKitAccount, useDisconnect } from "@reown/appkit/vue";
 import { useWeb3 } from "~/composables/web3/use-web3.composable";
 import Separator from "~/components/layout/Separator.vue";
 import { ethers } from "ethers";
+import { formatCurrency } from "~/utils/function/currency.function";
 
 const account = useAppKitAccount();
 const web3 = useWeb3();
 
 const address = computed(() => account.value.address);
-const gasBalance = ref<string>();
+const gasBalance = ref<number>();
 
 onMounted(async () => {
   const balance = await web3.getBalance(address.value ?? "");
 
-  gasBalance.value = Number(
-    ethers.utils.formatEther(balance.toBigInt()),
-  ).toFixed(6);
+  const hlsStr = ethers.utils.formatEther(balance.toBigInt());
+
+  gasBalance.value = parseFloat(hlsStr);
 });
 
 const buttons = [
@@ -61,7 +62,8 @@ const disconnect = () => {
       </p>
       <div class="flex items-center justify-between gap-1 text-xs mt-xs">
         <p>HLS:</p>
-        <p>{{ gasBalance }}</p>
+        <USkeleton v-if="gasBalance === undefined" class="h-4 w-[50px]" />
+        <p v-else>{{ formatCurrency(gasBalance, "") }}</p>
       </div>
     </div>
     <Separator class="-mx-1 my-1" />

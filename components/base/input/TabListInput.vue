@@ -21,7 +21,7 @@ const model = defineModel<TabListItem["value"]>();
       :key="`${uid}-${item.value}`"
       :aria-selected="item.value === model"
       type="button"
-      class="whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium cursor-pointer aria-selected:shadow-sm aria-selected:text-foreground aria-selected:bg-background"
+      class="whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium cursor-pointer aria-selected:shadow-sm aria-selected:text-foreground aria-selected:bg-background w-full"
       @click="model = item.value"
     >
       {{ item.label }}

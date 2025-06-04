@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import StatisticCard from "~/components/pool/StatisticCard.vue";
 import type { StatsCard } from "~/utils/type/base.type";
+import StatisticCard from "~/components/pool/StatisticCard.vue";
 
 const cards: StatsCard[] = [
   {
@@ -20,20 +20,30 @@ const cards: StatsCard[] = [
     titleClass: "text-green-600 dark:text-green-400",
   },
   {
-    name: "Avg APR",
+    name: "APR",
     value: "15.12%",
     footer: "-2.1% from last week",
     direction: "down",
     class: "from-purple-510/10 to-pink-500/10 border-purple-500/20",
     titleClass: "text-purple-600 dark:text-purple-400",
   },
+  {
+    name: "Fees (24h)",
+    value: "$8.4K",
+    footer: "+3.2% from yesterday",
+    direction: "up",
+    class:
+      "bg-gradient-to-r from-orange-500/10 to-red-500/10 border-orange-500/20",
+    titleClass: "text-orange-600 dark:text-orange-400",
+  },
 ];
 </script>
 
 <template>
-  <div class="grid laptop:grid-cols-3 gap-4">
+  <div class="flex items-center flex-col laptop:flex-row gap-4">
     <StatisticCard
       v-for="card in cards"
+      class="w-full"
       :key="card.name"
       :class="card.class"
       :title-class="card.titleClass"

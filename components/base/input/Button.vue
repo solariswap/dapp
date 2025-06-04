@@ -4,7 +4,7 @@ import { NuxtLink } from "#components";
 const props = withDefaults(
   defineProps<{
     to?: ReturnType<typeof useRoute> | string;
-    color?: "default" | "reverse" | "blue" | "red";
+    color?: "default" | "reverse" | "blue" | "red" | "red-plain";
     iconClass?: string;
     iconSize?: number;
     disabled?: boolean;
@@ -47,6 +47,8 @@ const btnClass = computed(() => {
       props.color === "blue",
     "bg-background border border-red-500/30 hover:bg-red-500/10":
       props.color === "red",
+    "bg-destructive text-destructive-foreground hover:bg-destructive/90":
+      props.color === "red-plain",
   };
 });
 </script>

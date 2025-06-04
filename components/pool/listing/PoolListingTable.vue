@@ -63,7 +63,13 @@ const columns: TableColumn<Pool>[] = [
         <Tick>{{ row.original.fee.toFixed(2) }}%</Tick>
       </template>
       <template #actions-cell="{ row }">
-        <Button color="reverse" class="ml-auto">Manage</Button>
+        <Button
+          color="reverse"
+          :to="`/pools/${row.original.id}`"
+          class="ml-auto w-fit"
+        >
+          Manage
+        </Button>
       </template>
     </UTable>
   </div>

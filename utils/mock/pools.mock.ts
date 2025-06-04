@@ -2,7 +2,7 @@ import type { Pool } from "~/utils/type/base.type";
 
 export const mockPools: Pool[] = [
   {
-    id: "1",
+    id: "123e4567-e89b-12d3-a456-426614174000",
     token0: {
       name: "Ethereum",
       symbol: "ETH",
@@ -27,7 +27,7 @@ export const mockPools: Pool[] = [
     createdAt: new Date("2024-01-15"),
   },
   {
-    id: "2",
+    id: "223e4567-e89b-12d3-a456-426614174000",
     token0: {
       name: "Bitcoin",
       symbol: "BTC",
@@ -51,7 +51,7 @@ export const mockPools: Pool[] = [
     createdAt: new Date("2024-01-10"),
   },
   {
-    id: "3",
+    id: "323e4567-e89b-12d3-a456-426614174000",
     token0: {
       name: "USD Coin",
       symbol: "USDC",
@@ -75,7 +75,7 @@ export const mockPools: Pool[] = [
     createdAt: new Date("2024-01-05"),
   },
   {
-    id: "4",
+    id: "423e4567-e89b-12d3-a456-426614174000",
     token0: {
       name: "Solana",
       symbol: "SOL",
@@ -100,7 +100,7 @@ export const mockPools: Pool[] = [
     createdAt: new Date("2024-01-20"),
   },
   {
-    id: "5",
+    id: "523e4567-e89b-12d3-a456-426614174000",
     token0: {
       name: "Chainlink",
       symbol: "LINK",
@@ -124,7 +124,7 @@ export const mockPools: Pool[] = [
     createdAt: new Date("2024-01-08"),
   },
   {
-    id: "6",
+    id: "623e4567-e89b-12d3-a456-426614174000",
     token0: {
       name: "Avalanche",
       symbol: "AVAX",
@@ -148,7 +148,7 @@ export const mockPools: Pool[] = [
     createdAt: new Date("2024-01-12"),
   },
   {
-    id: "7",
+    id: "723e4567-e89b-12d3-a456-426614174000",
     token0: {
       name: "Polkadot",
       symbol: "DOT",
@@ -172,7 +172,7 @@ export const mockPools: Pool[] = [
     createdAt: new Date("2024-01-03"),
   },
   {
-    id: "8",
+    id: "823e4567-e89b-12d3-a456-426614174000",
     token0: {
       name: "Raydium",
       symbol: "RAY",

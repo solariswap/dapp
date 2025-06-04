@@ -31,9 +31,10 @@ onMounted(() => {
 
 <template>
   <div
-    class="fixed inset-0 flex place-items-end laptop:place-items-center z-[999] laptop:p-md bg-gray-900/50"
+    class="fixed inset-0 flex place-items-end laptop:place-items-center z-[999] laptop:p-md bg-gray-900/50 appear"
     role="alertdialog"
     @click.exact="close"
+    :data-state="state"
   >
     <div
       :data-state="state"
@@ -91,6 +92,16 @@ onMounted(() => {
       opacity: 1;
       transform: translateY(0);
     }
+  }
+}
+
+.appear {
+  opacity: 0;
+
+  transition: opacity 0.2s ease-in-out;
+
+  &[data-state="open"] {
+    opacity: 1;
   }
 }
 </style>
