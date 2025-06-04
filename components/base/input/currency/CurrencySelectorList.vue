@@ -2,7 +2,7 @@
 import type { TokenCurrency } from "~/utils/type/base.type";
 import Currency from "~/components/pool/Currency.vue";
 import { ethers } from "ethers";
-import { useWeb3 } from "~/composables/web3/use-web3.composable";
+import { useProvider } from "~/composables/web3/use-provider.composable";
 import ERC20 from "~/utils/abi/ERC20.json";
 
 const props = defineProps<{
@@ -16,7 +16,7 @@ const emit = defineEmits<{
 
 const customCurrency = ref<TokenCurrency | null>(null);
 
-const web3 = useWeb3();
+const provider = useProvider();
 
 // const customCurrency = computed((): TokenCurrency | null => {
 //   if (!props.searchInput) return null;
@@ -43,7 +43,7 @@ watchDebounced(
   () => props.searchInput,
   async (after) => {
     if (isCustom.value && after) {
-      const contract = new ethers.Contract(after, ERC20.abi, web3.provider);
+      const contract = new ethers.Contract(after, ERC20.abi, undefined);
 
       try {
         const [name, symbol, decimals] = await Promise.all([

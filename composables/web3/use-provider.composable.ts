@@ -6,6 +6,8 @@ export const useProvider = () => {
   const { walletProvider } = useAppKitProvider("eip155");
 
   const getProvider = () => {
+    console.log(walletProvider);
+    if (!walletProvider) return null;
     return new ethers.providers.Web3Provider(
       walletProvider as any,
       runtimeConfig.public.chainId,
@@ -13,7 +15,7 @@ export const useProvider = () => {
   };
 
   const getSigner = () => {
-    return getProvider().getSigner();
+    return getProvider()?.getSigner();
   };
 
   return {
