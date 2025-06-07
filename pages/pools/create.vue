@@ -36,16 +36,16 @@ const testTx = async () => {
   const tickSpacing = 10;
   const sqrtPriceX96 = priceToSqrtPriceX96(5);
 
-  const pool = new Pool(
-    HLS,
-    TST,
-    fee,
-    tickSpacing,
-    "0x0000000000000000000000000000000000000000",
-    sqrtPriceX96,
-    0,
-    priceToTick(5),
-  );
+  // const pool = new Pool(
+  //   HLS,
+  //   TST,
+  //   fee,
+  //   tickSpacing,
+  //   "0x0000000000000000000000000000000000000000",
+  //   sqrtPriceX96,
+  //   0,
+  //   priceToTick(5),
+  // );
 
   const tickLower = nearestUsableTick(TickMath.MIN_TICK, tickSpacing);
   const tickUpper = nearestUsableTick(TickMath.MAX_TICK, tickSpacing);

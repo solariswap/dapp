@@ -43,7 +43,13 @@ watchDebounced(
   () => props.searchInput,
   async (after) => {
     if (isCustom.value && after) {
-      const contract = new ethers.Contract(after, ERC20.abi, undefined);
+      const contract = new ethers.Contract(
+        after,
+        ERC20.abi,
+        new ethers.providers.JsonRpcProvider(
+          "https://testnet1.helioschainlabs.org",
+        ),
+      );
 
       try {
         const [name, symbol, decimals] = await Promise.all([
