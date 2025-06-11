@@ -9,6 +9,7 @@ const store = usePoolCreationStore();
 
 const image1 = computed(() => store.state.currency0?.logoURI);
 const image2 = computed(() => store.state.currency1?.logoURI);
+const fee = computed(() => store.state.poolFee ?? 0);
 
 const imageCls = "w-10 h-10";
 </script>
@@ -26,7 +27,7 @@ const imageCls = "w-10 h-10";
           />
         </div>
         <p class="font-bold">{{ store.poolName }}</p>
-        <Tick class="text-sm">Fee {{ store.state.poolFee }}%</Tick>
+        <Tick class="text-sm">Fee {{ fee / 10_000 }}%</Tick>
       </div>
       <SquareButton @click="store.state.step = 0">
         <Icon name="mdi:edit" />

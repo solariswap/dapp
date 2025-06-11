@@ -1,4 +1,9 @@
 import type { TokenCurrency } from "~/utils/type/base.type";
+import {
+  SOLARI_MAX_TICK,
+  SOLARI_MIN_TICK,
+} from "~/utils/constant/tick.constant";
+import { getTickFromAmounts } from "~/utils/function/tick.function";
 
 type StoreState = {
   step: number;
@@ -11,6 +16,7 @@ type StoreState = {
   priceRange: [number, number];
   currency0Amount: number;
   currency1Amount: number;
+  loading: boolean;
 };
 
 export const usePoolCreationStore = defineStore("poolCreationStore", () => {
@@ -22,6 +28,7 @@ export const usePoolCreationStore = defineStore("poolCreationStore", () => {
     priceRange: [0, 0],
     currency0Amount: 0,
     currency1Amount: 0,
+    loading: false,
   });
 
   const nextStep = () => {
@@ -76,6 +83,30 @@ export const usePoolCreationStore = defineStore("poolCreationStore", () => {
     return `${state.value.priceRange[0].toPrecision(6)} - ${state.value.priceRange[1].toPrecision(6)} ${priceLabel.value}`;
   });
 
+  const tickLower = computed(() => {
+    const isFull = state.value.liquidityType === "full";
+
+    const priceLower = state.value.priceRange[0];
+    if (!priceLower || isFull) return SOLARI_MIN_TICK;
+
+    const decimals0 = state.value.currency0?.decimals ?? 18;
+    const decimals1 = state.value.currency1?.decimals ?? 18;
+
+    return getTickFromAmounts(1, priceLower, decimals0, decimals1);
+  });
+
+  const tickUpper = computed(() => {
+    const isFull = state.value.liquidityType === "full";
+
+    const priceUpper = state.value.priceRange[1];
+    if (!priceUpper || isFull) return SOLARI_MAX_TICK;
+
+    const decimals0 = state.value.currency0?.decimals ?? 18;
+    const decimals1 = state.value.currency1?.decimals ?? 18;
+
+    return getTickFromAmounts(1, priceUpper, decimals0, decimals1);
+  });
+
   return {
     state,
     nextStep,
@@ -86,5 +117,7 @@ export const usePoolCreationStore = defineStore("poolCreationStore", () => {
     symbol0,
     symbol1,
     priceRange,
+    tickLower,
+    tickUpper,
   };
 });

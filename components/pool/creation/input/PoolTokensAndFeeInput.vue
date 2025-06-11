@@ -29,6 +29,23 @@ watch(
   },
 );
 
+// Sort the tokens before going to the next step.
+const nextStep = () => {
+  const [currency0, currency1] = [
+    poolCreationStore.state.currency0,
+    poolCreationStore.state.currency1,
+  ];
+
+  if (!currency0 || !currency1) return;
+
+  if (currency1.address < currency0.address) {
+    poolCreationStore.state.currency0 = currency1;
+    poolCreationStore.state.currency1 = currency0;
+  }
+
+  poolCreationStore.nextStep();
+};
+
 const buttonDisabled = computed(() => {
   return (
     !poolCreationStore.state.currency0 ||
@@ -73,11 +90,7 @@ const buttonDisabled = computed(() => {
           </FormInput>
         </Form>
         <template #footer>
-          <Button
-            :disabled="buttonDisabled"
-            class="w-full"
-            @click="poolCreationStore.nextStep"
-          >
+          <Button :disabled="buttonDisabled" class="w-full" @click="nextStep">
             Continue
           </Button>
         </template>

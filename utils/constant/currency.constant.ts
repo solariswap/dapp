@@ -10,6 +10,13 @@ export const currencies: TokenCurrency[] = [
     logoURI: "/images/token/HLS.jpg",
   },
   {
+    name: "KRK Token",
+    symbol: "KRK",
+    address: "0x7419C891CCC5a19ab4c6A836E2b1536e25DFbb27",
+    decimals: 18,
+    popular: false,
+  },
+  {
     name: "Ethereum",
     symbol: "ETH",
     address: "0x00002",

@@ -5,26 +5,27 @@ import Form from "~/components/base/form/Form.vue";
 import FormInput from "~/components/base/form/FormInput.vue";
 import Label from "~/components/base/form/Label.vue";
 import TabListInput from "~/components/base/input/TabListInput.vue";
-import type { InlineInputOption, TabListItem } from "~/utils/type/base.type";
+import type { TabListItem } from "~/utils/type/base.type";
 import { usePoolCreationStore } from "~/store/pool-creation.store";
 import NumberInput from "~/components/base/input/NumberInput.vue";
 import Hint from "~/components/base/form/Hint.vue";
 import Tick from "~/components/layout/Tick.vue";
 import Tooltip from "~/components/layout/tooltip/Tooltip.vue";
-import InlineInput from "~/components/base/input/InlineInput.vue";
-import PriceRangeSelector from "~/components/pool/creation/range/PriceRangeSelector.vue";
 import Button from "~/components/base/input/Button.vue";
-import Tip from "~/components/layout/Tip.vue";
-import { usePoolPrice } from "~/composables/pools/use-pool-price.composable";
 import MarketPriceRecommandation from "~/components/pool/creation/summary/MarketPriceRecommandation.vue";
-import Error from "~/components/layout/Error.vue";
+import { useQuoter } from "~/composables/pools/use-quoter.composable";
+import { useSolariSwap } from "~/composables/web3/contracts/use-solari-swap.composable";
+import { getTickFromAmounts } from "~/utils/function/tick.function";
 
 const store = usePoolCreationStore();
-const poolPrice = usePoolPrice();
+const solariSwap = useSolariSwap();
+const quoter = useQuoter();
+const toast = useToast();
 
-const marketPrice = await poolPrice.getQuote(
-  store.state.currency0?.symbol ?? "",
-  store.state.currency1?.symbol ?? "",
+const marketPrice = await quoter.getQuote(
+  store.state.currency0?.address ?? "",
+  store.state.currency1?.address ?? "",
+  store.state.poolFee ?? 100,
 );
 if (marketPrice) store.initMarketPrice(marketPrice);
 
@@ -44,21 +45,52 @@ const tabListItems = computed((): TabListItem[] => [
   { label: `${store.state.currency1?.symbol} Price`, value: "quote_price" },
 ]);
 
-const priceRangeOptions: InlineInputOption<string>[] = [
-  { label: "Full Range", value: "full" },
-  { label: "Custom", value: "concentrated" },
-];
-
-const tips = [
-  "• Narrower ranges earn more fees but have higher risk of going out of range",
-  "• Wider ranges are safer but earn fewer fees when in range",
-  "• Consider the volatility of this token pair when setting your range",
-  "• Starting close to market price is recommended for new positions",
-];
-
 const isDisabled = computed(() => {
   return store.errors.length > 0;
 });
+
+const nextStep = async () => {
+  const basePrice = store.state.basePrice === "base_price";
+  const amount0 = basePrice ? store.state.initialPrice : 1;
+  const amount1 = basePrice ? 1 : store.state.initialPrice;
+
+  const initialTick = getTickFromAmounts(
+    amount0,
+    amount1,
+    store.state.currency0!.decimals,
+    store.state.currency1!.decimals,
+  );
+
+  store.state.loading = true;
+  try {
+    await solariSwap.createPool({
+      token0: store.state.currency0!.address,
+      token1: store.state.currency1!.address,
+      plFee: store.state.poolFee!,
+      initialTick,
+    });
+
+    toast.add({
+      color: "success",
+      title: "Pool created!",
+      description: "Please deposit the initial liquidity",
+    });
+
+    store.state.step++;
+  } catch (e: any) {
+    toast.add({
+      color: "error",
+      title: "Error creating the pool",
+      description: e.reason,
+    });
+
+    if (e.reason.includes("already created")) {
+      store.state.step++;
+    }
+  } finally {
+    store.state.loading = false;
+  }
+};
 </script>
 
 <template>
@@ -77,6 +109,7 @@ const isDisabled = computed(() => {
             />
           </FormInput>
           <MarketPriceRecommandation
+            v-if="marketPrice"
             :market-price="marketPrice"
             @click="store.state.initialPrice = marketPrice"
           />
@@ -100,33 +133,12 @@ const isDisabled = computed(() => {
             </NumberInput>
             <p class="flex items-center justify-between gap-xs">
               <Hint>
-                Set the starting price for your liquidity. Should be close to
-                the current market price to prevent arbitrage.
+                Set the starting price for your pool. Should be close to the
+                current market price to prevent arbitrage.
               </Hint>
               <Tick size="sm" type="success">0.00%</Tick>
             </p>
           </FormInput>
-          <FormInput>
-            <Label for="price-range">Price Range</Label>
-            <InlineInput
-              :options="priceRangeOptions"
-              v-model="store.state.liquidityType"
-            />
-          </FormInput>
-          <PriceRangeSelector
-            v-if="store.state.liquidityType === 'concentrated'"
-          />
-          <Tip>
-            Price Range Tips:
-            <ul class="grid gap-1 mt-1">
-              <li v-for="tip in tips" :key="tip">
-                {{ tip }}
-              </li>
-            </ul>
-          </Tip>
-          <Error v-for="error in store.errors" :key="error">
-            {{ error }}
-          </Error>
         </Form>
         <template #footer>
           <div class="flex items-center gap-sm">
@@ -140,9 +152,10 @@ const isDisabled = computed(() => {
             </Button>
             <Button
               :disabled="isDisabled"
+              :loading="store.state.loading"
               class="flex-1"
               type="button"
-              @click="store.state.step++"
+              @click="nextStep"
             >
               Continue
             </Button>

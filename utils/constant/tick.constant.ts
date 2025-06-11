@@ -1,0 +1,2 @@
+export const SOLARI_MAX_TICK = 887220;
+export const SOLARI_MIN_TICK = -SOLARI_MAX_TICK;

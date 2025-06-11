@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import PoolCreator from "~/components/pool/creation/PoolCreator.vue";
-import { useSolariPoolManager } from "~/composables/web3/contracts/use-solari-pool-manager.composable";
 import { ethers } from "ethers";
 import {
   priceToSqrtPriceX96,
@@ -8,9 +7,6 @@ import {
 } from "~/utils/function/tick.function";
 import { nearestUsableTick, TickMath } from "@uniswap/v3-sdk";
 import { CurrencyAmount, Token } from "@uniswap/sdk-core";
-// import { Pool, Position } from "@uniswap/v4-sdk";
-
-const poolManager = useSolariPoolManager();
 
 useSeoMeta({
   title: "Create a new pool",

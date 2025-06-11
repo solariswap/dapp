@@ -3,13 +3,13 @@ import { usePoolCreationStore } from "~/store/pool-creation.store";
 
 const store = usePoolCreationStore();
 
-const lines = [
+const lines = computed(() => [
   { label: "Price Range", value: store.priceRange },
   {
     label: "Initial Price",
     value: `${store.state.initialPrice.toPrecision(6)} ${store.priceLabel}`,
   },
-];
+]);
 </script>
 
 <template>

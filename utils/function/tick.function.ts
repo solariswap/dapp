@@ -1,4 +1,7 @@
-import { TickMath } from "@uniswap/v3-sdk";
+import { encodeSqrtRatioX96, TickMath } from "@uniswap/v3-sdk";
+import JSBI from "jsbi";
+import type { TokenCurrency } from "~/utils/type/base.type";
+import { currencyToToken } from "~/utils/function/currency.function";
 
 /**
  * Converts a given price to its corresponding tick representation.
@@ -18,6 +21,16 @@ export const priceToTick = (price: number) => {
 };
 
 /**
+ * Converts a given tick value to its corresponding price.
+ *
+ * @param tick - The tick value to be converted to a price.
+ * @return The price derived from the given tick value.
+ */
+export function tickToPrice(tick: number): number {
+  return Math.pow(1.0001, tick);
+}
+
+/**
  * Converts a given price to its corresponding square root price in Q96 fixed-point format.
  *
  * The provided price is first converted into a corresponding tick value using the `priceToTick` function.
@@ -31,3 +44,29 @@ export const priceToSqrtPriceX96 = (price: number) => {
 
   return TickMath.getSqrtRatioAtTick(tick);
 };
+
+/**
+ * Calculate the closest tick for a given token0/token1 amount ratio.
+ *
+ * @param amount0 Token0 amount (raw integer or float)
+ * @param amount1 Token1 amount (raw integer or float)
+ * @param decimals0 Decimals of token0
+ * @param decimals1 Decimals of token1
+ * @returns Closest tick as an integer
+ */
+export function getTickFromAmounts(
+  amount0: number,
+  amount1: number,
+  decimals0: number,
+  decimals1: number,
+): number {
+  // Normalize the ratio to 18-decimal precision by default
+  const scaledAmount0 = JSBI.BigInt((amount0 * 10 ** decimals0).toFixed(0));
+  const scaledAmount1 = JSBI.BigInt((amount1 * 10 ** decimals1).toFixed(0));
+
+  // Encode to sqrtPriceX96
+  const sqrtPriceX96 = encodeSqrtRatioX96(scaledAmount1, scaledAmount0);
+
+  // Convert to the nearest tick
+  return TickMath.getTickAtSqrtRatio(sqrtPriceX96);
+}
