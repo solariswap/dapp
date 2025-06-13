@@ -22,12 +22,15 @@ const solariSwap = useSolariSwap();
 const quoter = useQuoter();
 const toast = useToast();
 
-const marketPrice = await quoter.getQuote(
-  store.state.currency0?.address ?? "",
-  store.state.currency1?.address ?? "",
-  store.state.poolFee ?? 100,
-);
-if (marketPrice) store.initMarketPrice(marketPrice);
+const marketPrice = await quoter.quoteExactInputSingle({
+  tokenIn: store.state.currency0?.address ?? "",
+  tokenOut: store.state.currency1?.address ?? "",
+  fee: store.state.poolFee ?? 100,
+  amountIn: 1,
+  tokenInDecimals: store.state.currency0!.decimals,
+  tokenOutDecimals: store.state.currency1!.decimals,
+});
+if (marketPrice) store.initMarketPrice(marketPrice.amountOut.toNumber());
 
 watch(
   () => store.state.initialPrice,

@@ -1,15 +1,13 @@
 import JSBI from "jsbi";
 
-export function fromReadableAmount(amount: number, decimals: number) {
-  const extraDigits = Math.pow(10, countDecimals(amount));
-  const adjustedAmount = amount * extraDigits;
-  return JSBI.divide(
-    JSBI.multiply(
-      JSBI.BigInt(adjustedAmount),
-      JSBI.exponentiate(JSBI.BigInt(10), JSBI.BigInt(decimals)),
-    ),
-    JSBI.BigInt(extraDigits),
-  );
+export function fromReadableAmount(amount: string, decimals: number): string {
+  const [wholePart, fractionalPart = ""] = amount.split(".");
+  const paddedFractionalPart = fractionalPart.padEnd(decimals, "0");
+  const trimmedFractionalPart = paddedFractionalPart.slice(0, decimals);
+  return (
+    BigInt(wholePart + trimmedFractionalPart) *
+    BigInt(10) ** BigInt(decimals - trimmedFractionalPart.length)
+  ).toString();
 }
 
 /**
@@ -25,5 +23,5 @@ function countDecimals(value: number): number {
     const exponentValue = parseInt(exponent, 10);
     return Math.max(0, exponentValue * -1 + decimalsInBase);
   }
-  return str.split(".")[1]?.length || 0;
+  return str.split(".,")[1]?.length || 0;
 }

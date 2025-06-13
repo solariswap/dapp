@@ -2,18 +2,162 @@
 import Card from "~/components/layout/Card.vue";
 import SquareButton from "~/components/base/input/SquareButton.vue";
 import TokenAmountInput from "~/components/base/input/TokenAmountInput.vue";
-import type { TokenAmountModel } from "~/utils/type/base.type";
-import { currencies } from "~/utils/constant/currency.constant";
 import Button from "~/components/base/input/Button.vue";
 import { useSwapperStore } from "~/store/swapper.store";
 import { useModalStore } from "~/store/layout/modal.store";
 import SwapperSettingsModal from "~/components/swap/modal/SwapperSettingsModal.vue";
+import {
+  usePool,
+  usePoolManager,
+} from "~/composables/pools/use-pool.composable";
+import { useSwapperFactory } from "~/composables/pools/use-swapper.composable";
+import type { TokenCurrency } from "~/utils/type/base.type";
+import { ethers } from "ethers";
+import { tickToPrice } from "~/utils/function/tick.function";
 
+const toast = useToast();
 const store = useSwapperStore();
 const modalStore = useModalStore();
+const poolManager = usePoolManager();
+const swapperFactory = useSwapperFactory();
+const pool = ref<ReturnType<typeof usePool>>();
+const swapper = ref<ReturnType<typeof swapperFactory.construct>>();
 
 const openSettings = () => {
   modalStore.open(SwapperSettingsModal);
+};
+
+onMounted(async () => {
+  await initPool();
+});
+
+const initPool = async () => {
+  pool.value = await poolManager.getPoolFromCurrencies(
+    store.state.model0.currency,
+    store.state.model1.currency,
+  );
+  const [tick, tokens] = await Promise.all([
+    pool.value.getTick(),
+    pool.value.getTokens(),
+  ]);
+  store.state.pricePerToken0 = tickToPrice(tick);
+  store.state.poolTokens = tokens;
+  console.log(tokens);
+  swapper.value = swapperFactory.construct(pool.value);
+};
+
+const swap = async () => {
+  try {
+    // await swapper.quoteExactInputSingle(
+    //   store.state.model0.amount!,
+    //   store.state.model0.currency.address!,
+    //   store.state.model1.currency.address!,
+    // );
+  } catch (e: any) {
+    toast.add({
+      color: "error",
+      title: "Cannot while swapping",
+      description: e.message,
+    });
+  }
+};
+
+const quoteInUpdate = async () => {
+  if (!swapper.value) return;
+
+  if (!store.state.model0.amount) {
+    store.state.model1.amount = 0;
+    return;
+  }
+
+  store.state.model1Loading = true;
+  try {
+    const quote = await swapper.value.quoteExactInputSingle(
+      store.state.model0.amount!,
+      store.state.model0.currency.address!,
+      store.state.model1.currency.address!,
+    );
+
+    if (!quote) {
+      store.state.model1.amount = 0;
+      return;
+    }
+
+    store.state.model1.amount = parseFloat(
+      ethers.utils.formatUnits(quote.amountOut, 18),
+    );
+  } catch {
+    store.state.model1.amount = 0;
+  } finally {
+    store.state.model1Loading = false;
+  }
+};
+
+const quoteOutUpdate = async () => {
+  if (!swapper.value) return;
+
+  if (!store.state.model1.amount) {
+    store.state.model0.amount = 0;
+    return;
+  }
+
+  store.state.model0Loading = true;
+  try {
+    const quote = await swapper.value.quoteExactOutputSingle(
+      store.state.model1.amount!,
+      store.state.model0.currency.address!,
+      store.state.model1.currency.address!,
+    );
+
+    if (!quote) {
+      store.state.model0.amount = 0;
+      return;
+    }
+
+    store.state.model0.amount = parseFloat(
+      ethers.utils.formatUnits(quote.amountIn, 18),
+    );
+  } catch (e) {
+    store.state.model0.amount = 0;
+  } finally {
+    store.state.model0Loading = false;
+  }
+};
+
+const onCurrencyChange = async (
+  mode: "quoteIn" | "quoteOut",
+  old: TokenCurrency,
+) => {
+  const address0 = store.state.model0.currency.address;
+  const address1 = store.state.model1.currency.address;
+
+  if (address1 === address0) {
+    if (mode === "quoteIn") {
+      store.state.model1.currency = old;
+    } else if (mode === "quoteOut") {
+      store.state.model0.currency = old;
+    }
+
+    const tmpAmount = store.state.model0.amount;
+    store.state.model0.amount = store.state.model1.amount;
+    store.state.model1.amount = tmpAmount;
+  }
+
+  await initPool();
+
+  if (mode === "quoteIn") {
+    await quoteInUpdate();
+  } else if (mode === "quoteOut") {
+    await quoteOutUpdate();
+  }
+};
+
+const onAmountChange = async (mode: "quoteIn" | "quoteOut") => {
+  if (mode === "quoteIn") {
+    await quoteInUpdate();
+  } else if (mode === "quoteOut") {
+    await quoteOutUpdate();
+  }
 };
 </script>
 
@@ -26,7 +170,14 @@ const openSettings = () => {
           <Icon name="lucide:settings" />
         </SquareButton>
       </div>
-      <TokenAmountInput v-model="store.state.model0"> From </TokenAmountInput>
+      <TokenAmountInput
+        v-model="store.state.model0"
+        :loading="store.state.model0Loading"
+        @update-amount="onAmountChange('quoteIn')"
+        @update-currency="onCurrencyChange('quoteIn', $event)"
+      >
+        From
+      </TokenAmountInput>
       <div class="flex items-center justify-center -my-6 relative">
         <div
           class="rounded-full aspect-square w-10 gap-2 grid place-items-center bg-gradient-to-r from-yellow-500 to-orange-500"
@@ -34,9 +185,16 @@ const openSettings = () => {
           <Icon name="lucide:arrow-down" />
         </div>
       </div>
-      <TokenAmountInput v-model="store.state.model1"> To </TokenAmountInput>
+      <TokenAmountInput
+        v-model="store.state.model1"
+        :loading="store.state.model1Loading"
+        @update-amount="onAmountChange('quoteOut')"
+        @update-currency="onCurrencyChange('quoteOut', $event)"
+      >
+        To
+      </TokenAmountInput>
       <SwapSummary />
-      <Button>Swap</Button>
+      <Button @click="swap">Swap</Button>
     </div>
   </Card>
 </template>

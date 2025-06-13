@@ -3,17 +3,30 @@ import { useSwapperStore } from "~/store/swapper.store";
 
 const store = useSwapperStore();
 
-const lines = computed(() => [
-  {
-    key: "Price",
-    value: `1 ${store.state.model0.currency.symbol} = 0.543 ${store.state.model1.currency.symbol}`,
-  },
-  {
-    key: "Slippage tolerance",
-    value: store.slippageTolerance,
-  },
-  { key: "Deadline", value: store.state.deadline + "s" },
-]);
+const lines = computed(() => {
+  const currency0 = store.state.model0.currency;
+  const currency1 = store.state.model1.currency;
+
+  const reversed = store.areTokenReversed([
+    currency0.address,
+    currency1.address,
+  ]);
+  const price = reversed
+    ? 1 / store.state.pricePerToken0
+    : store.state.pricePerToken0;
+
+  return [
+    {
+      key: "Price",
+      value: `1 ${store.state.model0.currency.symbol} = ${price} ${store.state.model1.currency.symbol}`,
+    },
+    {
+      key: "Slippage tolerance",
+      value: store.slippageTolerance,
+    },
+    { key: "Deadline", value: store.state.deadline + "s" },
+  ];
+});
 </script>
 
 <template>

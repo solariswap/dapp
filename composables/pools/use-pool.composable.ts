@@ -2,12 +2,15 @@ import { useProvider } from "~/composables/web3/use-provider.composable";
 import { ethers } from "ethers";
 import { Pool } from "@uniswap/v3-sdk";
 import IUniswapV3PoolABI from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
-import { Token } from "@uniswap/sdk-core";
 import type { TokenCurrency } from "~/utils/type/base.type";
 import { currencyToToken } from "~/utils/function/currency.function";
+import { FeeTiers } from "~/utils/constant/fee.constant";
 
-export const usePool = (poolAddress: string) => {
-  const provider = useProvider();
+export const usePool = (
+  poolAddress: string,
+  _provider?: ReturnType<typeof useProvider>,
+) => {
+  const provider = _provider ?? useProvider();
 
   const getPool = () => {
     return new ethers.Contract(
@@ -25,8 +28,34 @@ export const usePool = (poolAddress: string) => {
     return slot0.tick;
   };
 
+  const getFee = () => {
+    const pool = getPool();
+
+    return pool.fee();
+  };
+
+  const getLiquidity = async () => {
+    const pool = getPool();
+
+    return BigInt(pool.liquidity());
+  };
+
+  const getTokens = async (): Promise<[string, string]> => {
+    const pool = getPool();
+
+    return await Promise.all([pool.token0(), pool.token1()]);
+  };
+
+  const getAddress = () => {
+    return poolAddress;
+  };
+
   return {
     getTick,
+    getFee,
+    getLiquidity,
+    getTokens,
+    getAddress,
   };
 };
 
@@ -35,6 +64,8 @@ export const usePoolFromParameters = (
   currency1: TokenCurrency,
   plFee: number,
 ) => {
+  const runtimeConfig = useRuntimeConfig();
+
   const token0 = currencyToToken(currency0);
   const token1 = currencyToToken(currency1);
   const address = Pool.getAddress(
@@ -42,8 +73,76 @@ export const usePoolFromParameters = (
     token1,
     plFee,
     undefined,
-    "0xd60f84942Bf4380673ae9642a489955ee4aeCe38",
+    runtimeConfig.public.factoryAddress,
   );
 
   return usePool(address);
+};
+
+export const usePoolManager = () => {
+  const runtimeConfig = useRuntimeConfig();
+  const provider = useProvider();
+
+  const getPoolFromCurrencies = async (
+    currency0: TokenCurrency,
+    currency1: TokenCurrency,
+  ) => {
+    const sortedCurrencies = [currency0, currency1].sort((a, b) => {
+      return a.address.localeCompare(b.address);
+    });
+
+    const token0 = currencyToToken(sortedCurrencies[0]);
+    const token1 = currencyToToken(sortedCurrencies[1]);
+
+    const addresses = FeeTiers.map((plFee) => {
+      return Pool.getAddress(
+        token0,
+        token1,
+        plFee,
+        undefined,
+        runtimeConfig.public.factoryAddress,
+      );
+    });
+
+    const status = await Promise.all(
+      addresses.map(async (address) => {
+        try {
+          const liquidity = await getLiquidity(address);
+          return {
+            address,
+            isCreated: liquidity > 0n,
+            liquidity,
+          };
+        } catch {
+          return {
+            address,
+            liquidity: 0n,
+            isCreated: false,
+          };
+        }
+      }),
+    );
+
+    if (status.filter((p) => p.isCreated).length === 0)
+      throw new Error("No pool found for the given currencies");
+
+    const sorted = status.toSorted((a, b) => {
+      return a.liquidity > b.liquidity ? 1 : -1;
+    });
+    const found = sorted.find((s) => s.isCreated) ?? status[0];
+
+    return usePool(found.address, provider);
+  };
+
+  const getLiquidity = async (address: string) => {
+    const contract = new ethers.Contract(
+      address,
+      IUniswapV3PoolABI.abi,
+      provider.getProvider()!,
+    );
+
+    return BigInt(await contract.liquidity());
+  };
+
+  return { getPoolFromCurrencies };
 };
