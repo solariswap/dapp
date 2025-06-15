@@ -10,6 +10,8 @@ const props = defineProps<{
 
 const image1 = computed(() => props.pool.token0.logoURI);
 const image2 = computed(() => props.pool.token1.logoURI);
+const symbol0 = computed(() => props.pool.token0.symbol);
+const symbol1 = computed(() => props.pool.token1.symbol);
 
 const poolName = computed(
   () => `${props.pool.token0.symbol}/${props.pool.token1.symbol}`,
@@ -25,8 +27,9 @@ const imageCls = "w-16 h-16";
     >
       <div class="flex items-center gap-4">
         <div class="flex items-center">
-          <CurrencyImage :class="imageCls" :src="image1" />
+          <CurrencyImage :symbol="symbol0" :class="imageCls" :src="image1" />
           <CurrencyImage
+            :symbol="symbol1"
             :class="imageCls"
             class="-translate-x-4"
             :src="image2"

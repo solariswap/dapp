@@ -16,21 +16,39 @@ import MarketPriceRecommandation from "~/components/pool/creation/summary/Market
 import { useQuoter } from "~/composables/pools/use-quoter.composable";
 import { useSolariSwap } from "~/composables/web3/contracts/use-solari-swap.composable";
 import { getTickFromAmounts } from "~/utils/function/tick.function";
+import { ethers } from "ethers";
+import { usePoolManager } from "~/composables/pools/use-pool.composable";
+import { useAppKitAccount } from "@reown/appkit/vue";
 
 const store = usePoolCreationStore();
+const poolManager = usePoolManager();
 const solariSwap = useSolariSwap();
 const quoter = useQuoter();
 const toast = useToast();
+const { $modal } = useNuxtApp();
+const account = useAppKitAccount();
 
-const marketPrice = await quoter.quoteExactInputSingle({
-  tokenIn: store.state.currency0?.address ?? "",
-  tokenOut: store.state.currency1?.address ?? "",
-  fee: store.state.poolFee ?? 100,
-  amountIn: 1,
-  tokenInDecimals: store.state.currency0!.decimals,
-  tokenOutDecimals: store.state.currency1!.decimals,
+const marketPrice = ref<number>();
+
+onMounted(async () => {
+  const pool = await poolManager.getPoolFromCurrencies(
+    store.state.currency0!,
+    store.state.currency1!,
+  );
+  const fee = await pool.getFee();
+
+  const quote = await quoter.quoteExactInputSingle({
+    tokenIn: store.state.currency0?.address ?? "",
+    tokenOut: store.state.currency1?.address ?? "",
+    fee,
+    amountIn: 1,
+    tokenInDecimals: store.state.currency0!.decimals,
+  });
+  if (!quote) return;
+
+  marketPrice.value = parseFloat(ethers.utils.formatEther(quote.amountOut));
+  if (marketPrice.value) store.initMarketPrice(marketPrice.value);
 });
-if (marketPrice) store.initMarketPrice(marketPrice.amountOut.toNumber());
 
 watch(
   () => store.state.initialPrice,
@@ -43,6 +61,24 @@ watch(
   },
 );
 
+watch(
+  () => store.state.basePrice,
+  () => {
+    if (!marketPrice.value) return;
+
+    marketPrice.value = 1 / marketPrice.value;
+    store.initMarketPrice(marketPrice.value);
+  },
+);
+
+const marketPricePercent = computed(() => {
+  if (!marketPrice.value) return null;
+
+  const percent =
+    (store.state.initialPrice - marketPrice.value) / marketPrice.value;
+  return percent.toFixed(2) + "%";
+});
+
 const tabListItems = computed((): TabListItem[] => [
   { label: `${store.state.currency0?.symbol} Price`, value: "base_price" },
   { label: `${store.state.currency1?.symbol} Price`, value: "quote_price" },
@@ -53,6 +89,8 @@ const isDisabled = computed(() => {
 });
 
 const nextStep = async () => {
+  if (!account.value.isConnected) return $modal.open();
+
   const basePrice = store.state.basePrice === "base_price";
   const amount0 = basePrice ? store.state.initialPrice : 1;
   const amount1 = basePrice ? 1 : store.state.initialPrice;
@@ -139,7 +177,9 @@ const nextStep = async () => {
                 Set the starting price for your pool. Should be close to the
                 current market price to prevent arbitrage.
               </Hint>
-              <Tick size="sm" type="success">0.00%</Tick>
+              <Tick v-if="marketPricePercent !== null" size="sm" type="success">
+                {{ marketPricePercent }}
+              </Tick>
             </p>
           </FormInput>
         </Form>

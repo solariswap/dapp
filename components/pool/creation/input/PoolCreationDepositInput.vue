@@ -9,35 +9,31 @@ import NumberInput from "~/components/base/input/NumberInput.vue";
 import Hint from "~/components/base/form/Hint.vue";
 import Button from "~/components/base/input/Button.vue";
 import { useAppKitAccount } from "@reown/appkit/vue";
-import { useErc20 } from "~/composables/token/use-erc20.composable";
+import { useErc20Factory } from "~/composables/token/use-erc20.composable";
 import { ethers } from "ethers";
 import { usePoolFromParameters } from "~/composables/pools/use-pool.composable";
 import { tickToPrice } from "~/utils/function/tick.function";
 import { useSolariSwap } from "~/composables/web3/contracts/use-solari-swap.composable";
-import { TickMath } from "@uniswap/v3-sdk";
 import InlineInput from "~/components/base/input/InlineInput.vue";
 import Tip from "~/components/layout/Tip.vue";
 import PriceRangeSelector from "~/components/pool/creation/range/PriceRangeSelector.vue";
 import Error from "~/components/layout/Error.vue";
 import type { InlineInputOption } from "~/utils/type/base.type";
-import { BigNumber } from "ethers";
 import { bigNumberWithSlippage } from "~/utils/function/currency.function";
-import {
-  SOLARI_MAX_TICK,
-  SOLARI_MIN_TICK,
-} from "~/utils/constant/tick.constant";
 
 const runtimeConfig = useRuntimeConfig();
 const store = usePoolCreationStore();
 const account = useAppKitAccount();
-const token0 = useErc20(store.state.currency0!.address);
-const token1 = useErc20(store.state.currency1!.address);
+const erc20Factory = useErc20Factory();
+const token0 = erc20Factory.construct(store.state.currency0!.address);
+const token1 = erc20Factory.construct(store.state.currency1!.address);
 const pool = usePoolFromParameters(
   store.state.currency0!,
   store.state.currency1!,
   store.state.poolFee!,
 );
 const solariSwap = useSolariSwap();
+const { $modal } = useNuxtApp();
 const toast = useToast();
 
 const currency0Balance = ref(0);
@@ -69,10 +65,6 @@ onMounted(async () => {
   currency1Balance.value = parseFloat(
     ethers.utils.formatEther(await token1.balanceOf()),
   );
-
-  const tick = await pool.getTick();
-
-  store.state.initialPrice = tickToPrice(tick);
 });
 
 const priceRangeOptions: InlineInputOption<string>[] = [
@@ -88,6 +80,8 @@ const tips = [
 ];
 
 const nextStep = async () => {
+  if (!account.value.isConnected) return $modal.open();
+
   const { solariSwapAddress } = runtimeConfig.public;
 
   const amount0 = ethers.utils.parseEther(

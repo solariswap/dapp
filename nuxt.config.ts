@@ -24,6 +24,7 @@ export default defineNuxtConfig({
       solariSwapAddress: process.env.NUXT_PUBLIC_SOLARI_SWAP_ADDRESS,
       quoterAddress: process.env.NUXT_PUBLIC_QUOTER_ADDRESS,
       factoryAddress: process.env.NUXT_PUBLIC_FACTORY_ADDRESS,
+      routerAddress: process.env.NUXT_PUBLIC_ROUTER_ADDRESS,
     },
   },
 

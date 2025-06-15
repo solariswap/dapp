@@ -16,7 +16,7 @@ export const usePool = (
     return new ethers.Contract(
       poolAddress,
       IUniswapV3PoolABI.abi,
-      provider.getProvider()!,
+      provider.getStaticProvider()!,
     );
   };
 
@@ -113,7 +113,8 @@ export const usePoolManager = () => {
             isCreated: liquidity > 0n,
             liquidity,
           };
-        } catch {
+        } catch (e) {
+          console.error(e);
           return {
             address,
             liquidity: 0n,
@@ -135,13 +136,15 @@ export const usePoolManager = () => {
   };
 
   const getLiquidity = async (address: string) => {
+    const _provider = provider.getStaticProvider();
     const contract = new ethers.Contract(
       address,
       IUniswapV3PoolABI.abi,
-      provider.getProvider()!,
+      _provider,
     );
 
-    return BigInt(await contract.liquidity());
+    const liquidity = await contract.liquidity();
+    return BigInt(liquidity);
   };
 
   return { getPoolFromCurrencies };

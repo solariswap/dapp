@@ -17,7 +17,7 @@ export const useQuoter = () => {
     return new ethers.Contract(
       runtimeConfig.public.quoterAddress,
       Quoter.abi,
-      provider.getProvider()!,
+      provider.getStaticProvider()!,
     );
   };
 

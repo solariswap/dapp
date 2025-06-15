@@ -20,7 +20,6 @@ const store = usePoolCreationStore();
         Lower bound of your price range. Your position will be out of range if
         price goes below this.
       </Hint>
-      {{ store.tickLower }}
     </FormInput>
     <FormInput class="flex-1">
       <Label for="max-price">Max price</Label>
@@ -31,7 +30,6 @@ const store = usePoolCreationStore();
         Upper bound of your price range. Your position will be out of range if
         price goes above this.
       </Hint>
-      {{ store.tickUpper }}
     </FormInput>
   </FormGroup>
 </template>

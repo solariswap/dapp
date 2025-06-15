@@ -9,6 +9,8 @@ const props = defineProps<{
 
 const image1 = computed(() => props.currency0.logoURI);
 const image2 = computed(() => props.currency1.logoURI);
+const symbol0 = computed(() => props.currency0.symbol);
+const symbol1 = computed(() => props.currency1.symbol);
 
 const imageCls = "w-10 h-10";
 </script>
@@ -16,8 +18,13 @@ const imageCls = "w-10 h-10";
 <template>
   <div class="flex items-center gap-xs">
     <div class="flex items-center">
-      <CurrencyImage :class="imageCls" :src="image1" />
-      <CurrencyImage :class="imageCls" class="-translate-x-2" :src="image2" />
+      <CurrencyImage :symbol="symbol0" :class="imageCls" :src="image1" />
+      <CurrencyImage
+        :symbol="symbol1"
+        :class="imageCls"
+        class="-translate-x-2"
+        :src="image2"
+      />
     </div>
     <p class="text-foreground font-bold text-lg">
       {{ currency0.symbol }}/{{ currency1.symbol }}

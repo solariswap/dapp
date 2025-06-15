@@ -21,6 +21,7 @@ withDefaults(
   <div class="flex items-center gap-sm">
     <CurrencyImage
       :style="{ width: `${logoSize}px`, height: `${logoSize}px` }"
+      :symbol
       :src="logo"
     />
     <div class="leading-tight text-left">

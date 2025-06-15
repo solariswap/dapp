@@ -13,12 +13,17 @@ export const useProvider = () => {
     );
   };
 
+  const getStaticProvider = () => {
+    return new ethers.providers.JsonRpcProvider(runtimeConfig.public.rpcUrl);
+  };
+
   const getSigner = () => {
     return getProvider()?.getSigner();
   };
 
   return {
     getProvider,
+    getStaticProvider,
 
     getSigner,
   };

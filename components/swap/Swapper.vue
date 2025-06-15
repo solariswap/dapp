@@ -12,11 +12,18 @@ import {
 } from "~/composables/pools/use-pool.composable";
 import { useSwapperFactory } from "~/composables/pools/use-swapper.composable";
 import type { TokenCurrency } from "~/utils/type/base.type";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { tickToPrice } from "~/utils/function/tick.function";
+import { useErc20Factory } from "~/composables/token/use-erc20.composable";
+import { fromReadableAmount } from "~/utils/function/token.function";
+import { useAppKitAccount } from "@reown/appkit/vue";
 
 const toast = useToast();
+const { $modal } = useNuxtApp();
+const runtimeConfig = useRuntimeConfig();
+const account = useAppKitAccount();
 const store = useSwapperStore();
+const erc20Factory = useErc20Factory();
 const modalStore = useModalStore();
 const poolManager = usePoolManager();
 const swapperFactory = useSwapperFactory();
@@ -42,23 +49,84 @@ const initPool = async () => {
   ]);
   store.state.pricePerToken0 = tickToPrice(tick);
   store.state.poolTokens = tokens;
-  console.log(tokens);
   swapper.value = swapperFactory.construct(pool.value);
 };
 
 const swap = async () => {
+  if (!swapper.value) return;
+
+  if (!account.value.isConnected) return $modal.open();
+
+  const token0 = erc20Factory.construct(store.state.model0.currency.address!);
+
+  let hash = undefined;
+  const tokenInDecimals = store.state.model0.currency.decimals;
+  const tokenOutDecimals = store.state.model1.currency.decimals;
+
+  store.state.loading = true;
   try {
-    // await swapper.quoteExactInputSingle(
-    //   store.state.model0.amount!,
-    //   store.state.model0.currency.address!,
-    //   store.state.model1.currency.address!,
-    // );
+    await token0.approve(
+      runtimeConfig.public.routerAddress,
+      fromReadableAmount(
+        store.state.model0.amount!.toString(),
+        tokenInDecimals,
+      ),
+    );
+
+    if (store.state.mode === "quoteIn") {
+      const amountOutMinimum =
+        store.state.model1.amount! * (1 - store.state.slippageTolerance);
+      const response = await swapper.value.swapExactInputSingle({
+        tokenIn: store.state.model0.currency.address!,
+        tokenOut: store.state.model1.currency.address!,
+        amountIn: store.state.model0.amount!,
+        amountOutMinimum,
+        tokenInDecimals: tokenInDecimals,
+        tokenOutDecimals: tokenOutDecimals,
+        slippage: store.state.slippageTolerance,
+        deadline: BigNumber.from(Date.now())
+          .div(1000)
+          .add(store.state.deadline),
+      });
+
+      if (!response) return;
+
+      hash = response.hash;
+    } else if (store.state.mode === "quoteOut") {
+      const amountInMaximum =
+        store.state.model0.amount! * (1 + store.state.slippageTolerance);
+      const response = await swapper.value.swapExactOutputSingle({
+        tokenIn: store.state.model0.currency.address!,
+        tokenOut: store.state.model1.currency.address!,
+        amountOut: store.state.model1.amount!,
+        amountInMaximum,
+        tokenInDecimals: tokenInDecimals,
+        tokenOutDecimals: tokenOutDecimals,
+        slippage: store.state.slippageTolerance,
+        deadline: BigNumber.from(Date.now())
+          .div(1000)
+          .add(store.state.deadline),
+      });
+
+      if (!response) return;
+
+      hash = response.hash;
+    }
+
+    toast.add({
+      color: "success",
+      title: "Swap completed",
+      description: `Transaction hash: ${hash}`,
+    });
   } catch (e: any) {
+    console.log(e);
     toast.add({
       color: "error",
-      title: "Cannot while swapping",
-      description: e.message,
+      title: "An error occurred while swapping.",
+      description: e.reason,
     });
+  } finally {
+    store.state.loading = false;
   }
 };
 
@@ -69,6 +137,8 @@ const quoteInUpdate = async () => {
     store.state.model1.amount = 0;
     return;
   }
+
+  store.setMode("quoteIn");
 
   store.state.model1Loading = true;
   try {
@@ -100,6 +170,8 @@ const quoteOutUpdate = async () => {
     store.state.model0.amount = 0;
     return;
   }
+
+  store.setMode("quoteOut");
 
   store.state.model0Loading = true;
   try {
@@ -159,6 +231,15 @@ const onAmountChange = async (mode: "quoteIn" | "quoteOut") => {
     await quoteOutUpdate();
   }
 };
+
+const isDisabled = computed(() => {
+  return (
+    !store.state.model0.amount ||
+    !store.state.model1.amount ||
+    store.state.model1Loading ||
+    store.state.model0Loading
+  );
+});
 </script>
 
 <template>
@@ -194,7 +275,13 @@ const onAmountChange = async (mode: "quoteIn" | "quoteOut") => {
         To
       </TokenAmountInput>
       <SwapSummary />
-      <Button @click="swap">Swap</Button>
+      <Button
+        :disabled="isDisabled"
+        :loading="store.state.loading"
+        @click="swap"
+      >
+        Swap
+      </Button>
     </div>
   </Card>
 </template>

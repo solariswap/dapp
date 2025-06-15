@@ -9,6 +9,8 @@ const store = usePoolCreationStore();
 
 const image1 = computed(() => store.state.currency0?.logoURI);
 const image2 = computed(() => store.state.currency1?.logoURI);
+const symbol0 = computed(() => store.state.currency0?.symbol ?? "UKN");
+const symbol1 = computed(() => store.state.currency1?.symbol ?? "UKN");
 const fee = computed(() => store.state.poolFee ?? 0);
 
 const imageCls = "w-10 h-10";
@@ -19,8 +21,9 @@ const imageCls = "w-10 h-10";
     <div class="flex items-center gap-sm justify-between">
       <div class="flex items-center gap-xs">
         <div class="flex items-center">
-          <CurrencyImage :class="imageCls" :src="image1" />
+          <CurrencyImage :symbol="symbol0" :class="imageCls" :src="image1" />
           <CurrencyImage
+            :symbol="symbol1"
             :class="imageCls"
             class="-translate-x-2"
             :src="image2"

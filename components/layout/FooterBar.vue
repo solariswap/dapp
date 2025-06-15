@@ -10,8 +10,8 @@ import Button from "~/components/base/input/Button.vue";
 const config = useAppConfig();
 
 const socials = [
-  { icon: "mdi:twitter", href: "#" },
-  { icon: "mdi:github", href: "#" },
+  { icon: "mdi:twitter", href: "https://x.com/solari_swap" },
+  { icon: "mdi:github", href: "https://github.com/solariswap" },
   { icon: "mdi:telegram", href: "#" },
 ];
 
@@ -19,8 +19,8 @@ const categories = [
   {
     name: "Product",
     links: [
-      { name: "Token Swap", href: "#" },
-      { name: "Liquidity Pools", href: "#" },
+      { name: "Token Swap", href: "/" },
+      { name: "Liquidity Pools", href: "/pools" },
       { name: "Yield Farming", href: "#" },
       { name: "Analytics", href: "#" },
     ],

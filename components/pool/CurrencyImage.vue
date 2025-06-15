@@ -1,6 +1,7 @@
 <script setup lang="ts">
 defineProps<{
   src?: string;
+  symbol: string;
 }>();
 </script>
 
@@ -12,6 +13,12 @@ defineProps<{
       alt="Currency Image"
       class="rounded-full object-contain w-full h-full"
     />
+    <p
+      v-else
+      class="grid place-items-center w-full h-full text-xs leading-tight font-bold"
+    >
+      {{ symbol[0] }}
+    </p>
   </div>
 </template>
 

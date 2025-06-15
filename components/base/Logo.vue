@@ -2,11 +2,7 @@
 
 <template>
   <nuxt-link to="/" class="flex items-center gap-3">
-    <div
-      class="w-10 h-10 rounded-xl bg-gradient-to-br from-yellow-400 via-orange-500 to-red-500 flex items-center justify-center shadow-lg"
-    >
-      <Icon name="lucide:zap" />
-    </div>
+    <img src="/images/logo.svg" alt="Logo" class="w-10 h-10" />
     <div class="flex flex-col">
       <p
         class="text-xl font-bold bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent"

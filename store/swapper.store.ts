@@ -13,6 +13,8 @@ type StoreState = {
 
   slippageTolerance: number;
   deadline: number;
+  mode: "quoteIn" | "quoteOut";
+  loading: boolean;
 };
 
 export const useSwapperStore = defineStore("swapperStore", () => {
@@ -28,6 +30,8 @@ export const useSwapperStore = defineStore("swapperStore", () => {
     pricePerToken0: 0,
     slippageTolerance: 0.005,
     deadline: 20,
+    mode: "quoteIn",
+    loading: false,
   });
 
   const slippageTolerance = computed(() => {
@@ -43,10 +47,15 @@ export const useSwapperStore = defineStore("swapperStore", () => {
     );
   };
 
+  const setMode = (mode: "quoteIn" | "quoteOut") => {
+    state.value.mode = mode;
+  };
+
   return {
     state,
 
     slippageTolerance,
     areTokenReversed,
+    setMode,
   };
 });
