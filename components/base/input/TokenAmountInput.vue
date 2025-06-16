@@ -29,7 +29,6 @@ const onUpdate = async (erc20Address: string) => {
   const _provider = provider.getProvider();
   const address = account.value.address;
   if (!_provider || !address) return;
-  // if (after?.currency?.symbol === before?.currency?.symbol) return;
 
   const contract = new ethers.Contract(erc20Address, ERC20.abi, _provider);
 
@@ -48,6 +47,13 @@ watchDebounced(
     }
   },
   { deep: true },
+);
+
+watch(
+  () => account.value.isConnected,
+  async (after, before) => {
+    if (!before && after) await onUpdate(model.value.currency.address);
+  },
 );
 
 onMounted(async () => {
