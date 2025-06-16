@@ -9,7 +9,9 @@
       >
         SolariSwap
       </p>
-      <p class="text-xs text-muted-foreground font-medium">First Helios DEX</p>
+      <p class="text-xs text-muted-foreground font-medium">
+        First Native Helios DEX
+      </p>
     </div>
   </nuxt-link>
 </template>

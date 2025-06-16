@@ -33,11 +33,18 @@ const categories: {
   {
     name: "Resources",
     links: [
-      { name: "Help Center", href: "#", tick: "Soon" },
-      { name: "User Guide", href: "#", tick: "Soon" },
-      { name: "Whitepaper", href: "#", tick: "Soon" },
+      { name: "Help Center", href: "https://discord.gg/JYA2PaP6br" },
+      { name: "User Guide", href: "https://docs.solariswap.finance" },
+      {
+        name: "Whitepaper",
+        href: "https://whitepaper.solariswap.finance",
+        tick: "Soon",
+      },
       { name: "Security Audits", href: "#", tick: "Soon" },
-      { name: "Brand Assets", href: "#", tick: "Soon" },
+      {
+        name: "Brand Assets",
+        href: "https://drive.google.com/drive/folders/1YScwg6edzOMvtVEDoMFZt_rF62mbN0l7?usp=sharing",
+      },
     ],
   },
 ];
@@ -56,9 +63,9 @@ const goTo = (social: { href: string }) => {
         <div class="flex flex-col gap-4">
           <Logo />
           <p class="text-muted-foreground text-sm font-medium leading-relaxed">
-            The next-generation decentralized exchange built on cutting-edge
-            technology. Swap tokens instantly with minimal fees and maximum
-            security.
+            The first native DEX on Helios enabling cross-chain swaps,
+            automation, and MEV-resistant execution powered by interchain
+            staking.
           </p>
           <div class="flex items-center gap-sm">
             <SquareButton
