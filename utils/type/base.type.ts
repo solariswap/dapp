@@ -27,6 +27,7 @@ export type StatsCard = {
   value: string;
   footer: string;
   direction: "down" | "up";
+  tick?: string;
   class: string;
   titleClass: string;
 };

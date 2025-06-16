@@ -8,6 +8,10 @@ import PoolComposition from "~/components/pool/management/position/PoolCompositi
 const { id } = useRoute().params;
 
 const pool = computed(() => mockPools.find((pool) => pool.id === id));
+
+useSeoMeta({
+  title: "Pool Management",
+});
 </script>
 
 <template>

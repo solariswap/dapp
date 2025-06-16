@@ -14,7 +14,15 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "@nuxt/ui",
     "@vueuse/nuxt",
+    "@nuxtjs/seo",
   ],
+
+  site: {
+    url: "https://solariswap.finance",
+    name: "SolariSwap",
+    description:
+      "The first native DEX on Helios enabling cross-chain swaps, automation, and MEV-resistant execution powered by interchain staking.",
+  },
 
   runtimeConfig: {
     public: {
