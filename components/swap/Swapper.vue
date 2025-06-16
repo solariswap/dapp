@@ -38,6 +38,16 @@ onMounted(async () => {
   await initPool();
 });
 
+const invertTokens = () => {
+  const tmp = store.state.model0.currency;
+  store.state.model0.currency = store.state.model1.currency;
+  store.state.model1.currency = tmp;
+
+  const tmpAmount = store.state.model0.amount;
+  store.state.model0.amount = store.state.model1.amount;
+  store.state.model1.amount = tmpAmount;
+};
+
 const initPool = async () => {
   pool.value = await poolManager.getPoolFromCurrencies(
     store.state.model0.currency,
@@ -259,13 +269,16 @@ const isDisabled = computed(() => {
       >
         From
       </TokenAmountInput>
-      <div class="flex items-center justify-center -my-6 relative">
+      <button
+        class="flex items-center justify-center -my-6 relative cursor-pointer"
+        @click="invertTokens"
+      >
         <div
           class="rounded-full aspect-square w-10 gap-2 grid place-items-center bg-gradient-to-r from-yellow-500 to-orange-500"
         >
           <Icon name="lucide:arrow-down" />
         </div>
-      </div>
+      </button>
       <TokenAmountInput
         v-model="store.state.model1"
         :loading="store.state.model1Loading"
