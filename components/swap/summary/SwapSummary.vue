@@ -18,7 +18,7 @@ const lines = computed(() => {
   return [
     {
       key: "Price",
-      value: `1 ${store.state.model0.currency.symbol} = ${price} ${store.state.model1.currency.symbol}`,
+      value: `1 ${store.state.model0.currency.symbol} ≈ ${price} ${store.state.model1.currency.symbol}`,
     },
     {
       key: "Slippage tolerance",

@@ -6,33 +6,38 @@ import Form from "~/components/base/form/Form.vue";
 import FormInput from "~/components/base/form/FormInput.vue";
 import TextInput from "~/components/base/input/TextInput.vue";
 import Button from "~/components/base/input/Button.vue";
+import Tick from "~/components/layout/Tick.vue";
 
 const config = useAppConfig();
 
 const socials = [
   { icon: "mdi:twitter", href: "https://x.com/solari_swap" },
   { icon: "mdi:github", href: "https://github.com/solariswap" },
-  { icon: "mdi:telegram", href: "#" },
+  { icon: "mdi:telegram", href: "https://t.me/solariswap" },
+  { icon: "mdi:discord", href: "https://discord.gg/JYA2PaP6br" },
 ];
 
-const categories = [
+const categories: {
+  name: string;
+  links: { name: string; href: string; tick?: string }[];
+}[] = [
   {
     name: "Product",
     links: [
       { name: "Token Swap", href: "/" },
       { name: "Liquidity Pools", href: "/pools" },
-      { name: "Yield Farming", href: "#" },
-      { name: "Analytics", href: "#" },
+      { name: "Yield Farming", href: "#", tick: "Soon" },
+      { name: "Analytics", href: "#", tick: "Soon" },
     ],
   },
   {
     name: "Resources",
     links: [
-      { name: "Help Center", href: "#" },
-      { name: "User Guide", href: "#" },
-      { name: "Whitepaper", href: "#" },
-      { name: "Security Audits", href: "#" },
-      { name: "Brand Assets", href: "#" },
+      { name: "Help Center", href: "#", tick: "Soon" },
+      { name: "User Guide", href: "#", tick: "Soon" },
+      { name: "Whitepaper", href: "#", tick: "Soon" },
+      { name: "Security Audits", href: "#", tick: "Soon" },
+      { name: "Brand Assets", href: "#", tick: "Soon" },
     ],
   },
 ];
@@ -79,6 +84,7 @@ const goTo = (social: { href: string }) => {
             >
               <PrimaryLink :to="link.href" target="_blank">
                 {{ link.name }}
+                <Tick v-if="link.tick" type="warning">{{ link.tick }}</Tick>
               </PrimaryLink>
             </li>
           </ul>
@@ -97,7 +103,7 @@ const goTo = (social: { href: string }) => {
                 placeholder="Enter your mail"
               />
             </FormInput>
-            <Button>Subscribe</Button>
+            <Button>Subscribe (soon)</Button>
           </Form>
           <p class="mt-2 text-muted-foreground text-xs">
             By subscribing, you agree to our Privacy Policy and consent to

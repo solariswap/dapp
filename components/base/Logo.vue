@@ -5,7 +5,7 @@
     <img src="/images/logo.svg" alt="Logo" class="w-10 h-10" />
     <div class="flex flex-col">
       <p
-        class="text-xl font-bold bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent"
+        class="text-xl font-bold bg-gradient-to-r from-yellow-500 to-orange-500 bg-clip-text text-transparent"
       >
         SolariSwap
       </p>

@@ -35,4 +35,10 @@ watch(
   </main>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+main {
+  background-image: radial-gradient(rgb(60, 59, 56) 1px, transparent 0);
+  background-size: 40px 40px;
+  background-position: -19px -19px;
+}
+</style>
