@@ -2,7 +2,6 @@
 import Card from "~/components/layout/Card.vue";
 import SquareButton from "~/components/base/input/SquareButton.vue";
 import Button from "~/components/base/input/Button.vue";
-import TokenAmountInput from "~/components/base/input/TokenAmountInput.vue";
 import { useSwapperStore } from "~/store/swapper.store";
 
 const store = useSwapperStore();
@@ -17,25 +16,15 @@ const store = useSwapperStore();
           <Icon name="lucide:settings" />
         </SquareButton>
       </div>
-      <TokenAmountInput
-        v-model="store.state.model0"
-        :loading="store.state.model0Loading"
-      >
-        From
-      </TokenAmountInput>
-      <div class="flex items-center justify-center -my-6 relative">
+      <USkeleton class="w-full h-[88px]"></USkeleton>
+      <div class="flex items-center justify-center -my-6 relative z-10">
         <div
           class="rounded-full aspect-square w-10 gap-2 grid place-items-center bg-gradient-to-r from-yellow-500 to-orange-500"
         >
           <Icon name="lucide:arrow-down" />
         </div>
       </div>
-      <TokenAmountInput
-        v-model="store.state.model1"
-        :loading="store.state.model1Loading"
-      >
-        To
-      </TokenAmountInput>
+      <USkeleton class="w-full h-[88px]"></USkeleton>
       <SwapSummary />
       <Button disabled :loading="store.state.loading"> Swap </Button>
     </div>
