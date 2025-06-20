@@ -15,8 +15,10 @@ import Button from "~/components/base/input/Button.vue";
 import MarketPriceRecommandation from "~/components/pool/creation/summary/MarketPriceRecommandation.vue";
 import { useQuoter } from "~/composables/pools/use-quoter.composable";
 import { useSolariSwap } from "~/composables/web3/contracts/use-solari-swap.composable";
-import { getTickFromAmounts } from "~/utils/function/tick.function";
-import { ethers } from "ethers";
+import {
+  getTickFromAmounts,
+  tickToPrice,
+} from "~/utils/function/tick.function";
 import { usePoolManager } from "~/composables/pools/use-pool.composable";
 import { useAppKitAccount } from "@reown/appkit/vue";
 
@@ -34,19 +36,13 @@ onMounted(async () => {
   const pool = await poolManager.getPoolFromCurrencies(
     store.state.currency0!,
     store.state.currency1!,
+    true,
   );
-  const fee = await pool.getFee();
+  const tick = await pool.getTick();
 
-  const quote = await quoter.quoteExactInputSingle({
-    tokenIn: store.state.currency0?.address ?? "",
-    tokenOut: store.state.currency1?.address ?? "",
-    fee,
-    amountIn: 1,
-    tokenInDecimals: store.state.currency0!.decimals,
-  });
-  if (!quote) return;
+  if (!tick) return;
 
-  marketPrice.value = parseFloat(ethers.utils.formatEther(quote.amountOut));
+  marketPrice.value = tickToPrice(tick);
   if (marketPrice.value) store.initMarketPrice(marketPrice.value);
 });
 
@@ -66,8 +62,11 @@ watch(
   () => {
     if (!marketPrice.value) return;
 
+    const price = store.state.initialPrice ?? marketPrice.value;
     marketPrice.value = 1 / marketPrice.value;
-    store.initMarketPrice(marketPrice.value);
+
+    const percent = 0.2;
+    store.state.priceRange = [price * (1 - percent), price * (1 + percent)];
   },
 );
 
@@ -75,7 +74,7 @@ const marketPricePercent = computed(() => {
   if (!marketPrice.value) return null;
 
   const percent =
-    (store.state.initialPrice - marketPrice.value) / marketPrice.value;
+    ((store.state.initialPrice - marketPrice.value) / marketPrice.value) * 100;
   return percent.toFixed(2) + "%";
 });
 
@@ -88,19 +87,44 @@ const isDisabled = computed(() => {
   return store.errors.length > 0;
 });
 
+const token0PriceLabel = computed(() => {
+  const [symbol0, symbol1] = [store.symbol0, store.symbol1];
+
+  const pricePerSymbol0 =
+    store.state.basePrice === "base_price"
+      ? 1 / store.state.initialPrice
+      : store.state.initialPrice;
+
+  return `1 ${symbol0} ≈ ${pricePerSymbol0.toFixed(6)} ${symbol1}`;
+});
+
+const token1PriceLabel = computed(() => {
+  const [symbol0, symbol1] = [store.symbol0, store.symbol1];
+
+  const pricePerSymbol1 =
+    store.state.basePrice === "base_price"
+      ? store.state.initialPrice
+      : 1 / store.state.initialPrice;
+
+  return `1 ${symbol1} ≈ ${pricePerSymbol1.toFixed(6)} ${symbol0}`;
+});
+
 const nextStep = async () => {
   if (!account.value.isConnected) return $modal.open();
 
   const basePrice = store.state.basePrice === "base_price";
-  const amount0 = basePrice ? store.state.initialPrice : 1;
-  const amount1 = basePrice ? 1 : store.state.initialPrice;
+  const amount0 = basePrice ? 1 : store.state.initialPrice;
+  const amount1 = basePrice ? store.state.initialPrice : 1;
 
   const initialTick = getTickFromAmounts(
-    amount0,
     amount1,
-    store.state.currency0!.decimals,
+    amount0,
     store.state.currency1!.decimals,
+    store.state.currency0!.decimals,
   );
+
+  // console.log("Initial Tick:", initialTick);
+  // return;
 
   store.state.loading = true;
   try {
@@ -119,14 +143,14 @@ const nextStep = async () => {
 
     store.state.step++;
   } catch (e: any) {
-    toast.add({
-      color: "error",
-      title: "Error creating the pool",
-      description: e.reason,
-    });
-
     if (e.reason.includes("already created")) {
       store.state.step++;
+    } else {
+      toast.add({
+        color: "error",
+        title: "Error creating the pool",
+        description: e.reason,
+      });
     }
   } finally {
     store.state.loading = false;
@@ -180,6 +204,12 @@ const nextStep = async () => {
               <Tick v-if="marketPricePercent !== null" size="sm" type="success">
                 {{ marketPricePercent }}
               </Tick>
+            </p>
+            <p class="text-xs">
+              {{ token0PriceLabel }}
+            </p>
+            <p class="text-xs">
+              {{ token1PriceLabel }}
             </p>
           </FormInput>
         </Form>

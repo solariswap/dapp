@@ -9,6 +9,7 @@ type StoreState = {
   model1Loading: boolean;
 
   pricePerToken0: number;
+  poolFee?: number;
   poolTokens?: [string, string];
 
   slippageTolerance: number;

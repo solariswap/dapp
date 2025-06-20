@@ -17,6 +17,8 @@ import { tickToPrice } from "~/utils/function/tick.function";
 import { useErc20Factory } from "~/composables/token/use-erc20.composable";
 import { fromReadableAmount } from "~/utils/function/token.function";
 import { useAppKitAccount } from "@reown/appkit/vue";
+import { useQuoterApi } from "~/composables/api/quoter-api.composable";
+import { useProvider } from "~/composables/web3/use-provider.composable";
 
 const toast = useToast();
 const { $modal } = useNuxtApp();
@@ -25,18 +27,15 @@ const account = useAppKitAccount();
 const store = useSwapperStore();
 const erc20Factory = useErc20Factory();
 const modalStore = useModalStore();
-const poolManager = usePoolManager();
 const swapperFactory = useSwapperFactory();
+const quoterApi = useQuoterApi();
 const pool = ref<ReturnType<typeof usePool>>();
+const provider = useProvider();
 const swapper = ref<ReturnType<typeof swapperFactory.construct>>();
 
 const openSettings = () => {
   modalStore.open(SwapperSettingsModal);
 };
-
-onMounted(async () => {
-  await initPool();
-});
 
 const invertTokens = () => {
   const tmp = store.state.model0.currency;
@@ -46,20 +45,6 @@ const invertTokens = () => {
   const tmpAmount = store.state.model0.amount;
   store.state.model0.amount = store.state.model1.amount;
   store.state.model1.amount = tmpAmount;
-};
-
-const initPool = async () => {
-  pool.value = await poolManager.getPoolFromCurrencies(
-    store.state.model0.currency,
-    store.state.model1.currency,
-  );
-  const [tick, tokens] = await Promise.all([
-    pool.value.getTick(),
-    pool.value.getTokens(),
-  ]);
-  store.state.pricePerToken0 = tickToPrice(tick);
-  store.state.poolTokens = tokens;
-  swapper.value = swapperFactory.construct(pool.value);
 };
 
 const swap = async () => {
@@ -141,8 +126,6 @@ const swap = async () => {
 };
 
 const quoteInUpdate = async () => {
-  if (!swapper.value) return;
-
   if (!store.state.model0.amount) {
     store.state.model1.amount = 0;
     return;
@@ -151,56 +134,80 @@ const quoteInUpdate = async () => {
   store.setMode("quoteIn");
 
   store.state.model1Loading = true;
-  try {
-    const quote = await swapper.value.quoteExactInputSingle(
-      store.state.model0.amount!,
-      store.state.model0.currency.address!,
-      store.state.model1.currency.address!,
-    );
 
-    if (!quote) {
-      store.state.model1.amount = 0;
-      return;
-    }
+  try {
+    const response = await quoterApi.getQuote({
+      tokenIn: store.state.model0.currency.address!,
+      tokenOut: store.state.model1.currency.address!,
+      amountIn: fromReadableAmount(
+        store.state.model0.amount!.toString(),
+        store.state.model0.currency.decimals,
+      ),
+      mode: "exactInput",
+    });
+
+    store.state.pricePerToken0 = tickToPrice(response.pool.tick);
+    store.state.poolFee = response.pool.fee;
 
     store.state.model1.amount = parseFloat(
-      ethers.utils.formatUnits(quote.amountOut, 18),
+      ethers.utils.formatUnits(
+        response.amountOut,
+        store.state.model1.currency.decimals,
+      ),
     );
-  } catch {
-    store.state.model1.amount = 0;
+
+    const pool = usePool(response.pool.address, provider);
+    swapper.value = swapperFactory.construct(pool);
+  } catch (e: any) {
+    toast.add({
+      color: "error",
+      title: "An error occurred while fetching the quote.",
+      description: e.message,
+    });
   } finally {
     store.state.model1Loading = false;
   }
 };
 
 const quoteOutUpdate = async () => {
-  if (!swapper.value) return;
-
   if (!store.state.model1.amount) {
     store.state.model0.amount = 0;
     return;
   }
 
-  store.setMode("quoteOut");
+  store.setMode("quoteIn");
 
   store.state.model0Loading = true;
-  try {
-    const quote = await swapper.value.quoteExactOutputSingle(
-      store.state.model1.amount!,
-      store.state.model0.currency.address!,
-      store.state.model1.currency.address!,
-    );
 
-    if (!quote) {
-      store.state.model0.amount = 0;
-      return;
-    }
+  try {
+    const response = await quoterApi.getQuote({
+      tokenIn: store.state.model0.currency.address!,
+      tokenOut: store.state.model1.currency.address!,
+      amountOut: fromReadableAmount(
+        store.state.model1.amount!.toString(),
+        store.state.model1.currency.decimals,
+      ),
+      mode: "exactOutput",
+    });
+
+    store.state.pricePerToken0 = tickToPrice(response.pool.tick);
+    store.state.poolFee = response.pool.fee;
 
     store.state.model0.amount = parseFloat(
-      ethers.utils.formatUnits(quote.amountIn, 18),
+      ethers.utils.formatUnits(
+        response.amountIn,
+        store.state.model0.currency.decimals,
+      ),
     );
-  } catch (e) {
-    store.state.model0.amount = 0;
+
+    const pool = usePool(response.pool.address, provider);
+    swapper.value = swapperFactory.construct(pool);
+  } catch (e: any) {
+    toast.add({
+      color: "error",
+      title: "An error occurred while fetching the quote.",
+      description: e.message,
+    });
   } finally {
     store.state.model0Loading = false;
   }
@@ -225,7 +232,7 @@ const onCurrencyChange = async (
     store.state.model1.amount = tmpAmount;
   }
 
-  await initPool();
+  // await initPool();
 
   if (mode === "quoteIn") {
     await quoteInUpdate();
@@ -270,7 +277,7 @@ const isDisabled = computed(() => {
         From
       </TokenAmountInput>
       <button
-        class="flex items-center justify-center -my-6 relative cursor-pointer"
+        class="flex items-center justify-center -my-6 relative cursor-pointer z-10"
         @click="invertTokens"
       >
         <div

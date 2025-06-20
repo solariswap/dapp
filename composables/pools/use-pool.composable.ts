@@ -86,6 +86,7 @@ export const usePoolManager = () => {
   const getPoolFromCurrencies = async (
     currency0: TokenCurrency,
     currency1: TokenCurrency,
+    ignoreLiquidity?: boolean,
   ) => {
     const sortedCurrencies = [currency0, currency1].sort((a, b) => {
       return a.address.localeCompare(b.address);
@@ -107,22 +108,28 @@ export const usePoolManager = () => {
     const status = await Promise.all(
       addresses.map(async (address) => {
         try {
-          const liquidity = await getLiquidity(address);
+          const [liquidity, slot0] = await Promise.all([
+            getLiquidity(address),
+            getSlot0(address),
+          ]);
           return {
             address,
-            isCreated: liquidity > 0n,
+            isCreated: ignoreLiquidity || liquidity > 0n,
+            tick: slot0.tick,
             liquidity,
           };
         } catch (e) {
-          console.error(e);
           return {
             address,
             liquidity: 0n,
+            tick: 0,
             isCreated: false,
           };
         }
       }),
     );
+
+    console.log(status);
 
     if (status.filter((p) => p.isCreated).length === 0)
       throw new Error("No pool found for the given currencies");
@@ -145,6 +152,17 @@ export const usePoolManager = () => {
 
     const liquidity = await contract.liquidity();
     return BigInt(liquidity);
+  };
+
+  const getSlot0 = async (address: string) => {
+    const _provider = provider.getStaticProvider();
+    const contract = new ethers.Contract(
+      address,
+      IUniswapV3PoolABI.abi,
+      _provider,
+    );
+
+    return await contract.slot0();
   };
 
   return { getPoolFromCurrencies };

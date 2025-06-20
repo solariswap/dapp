@@ -28,6 +28,9 @@ export default defineNuxtConfig({
     public: {
       rpcUrl: process.env.NUXT_PUBLIC_RPC_URL,
       chainId: process.env.NUXT_PUBLIC_CHAIN_ID,
+      explorerUrl: process.env.NUXT_PUBLIC_EXPLORER_URL,
+
+      apiBaseUrl: process.env.NUXT_PUBLIC_API_BASE_URL,
 
       solariSwapAddress: process.env.NUXT_PUBLIC_SOLARI_SWAP_ADDRESS,
       quoterAddress: process.env.NUXT_PUBLIC_QUOTER_ADDRESS,

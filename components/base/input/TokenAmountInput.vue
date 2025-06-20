@@ -6,7 +6,9 @@ import { BigNumber, ethers } from "ethers";
 import ERC20 from "~/utils/abi/ERC20.json";
 import { useAppKitAccount } from "@reown/appkit/vue";
 
-withDefaults(defineProps<{ loading?: boolean }>(), { loading: false });
+const props = withDefaults(defineProps<{ loading?: boolean }>(), {
+  loading: false,
+});
 const emit = defineEmits<{
   (e: "update-amount", amount?: number): void;
   (e: "update-currency", currency: TokenCurrency): void;
@@ -60,13 +62,19 @@ onMounted(async () => {
   await onUpdate(model.value.currency.address);
 });
 
-const updateAmount = async () => {
+const updateAmount = useDebounceFn(async () => {
   emit("update-amount", model.value.amount);
-};
+}, 200);
+
+const cls = computed(() => {
+  return {
+    "animate-pulse": props.loading,
+  };
+});
 </script>
 
 <template>
-  <div class="rounded-xl bg-muted p-4">
+  <div class="rounded-xl p-4 bg-muted" :class="cls">
     <div
       class="flex items-center gap-2 justify-between mb-2 text-sm text-muted-foreground"
     >

@@ -11,21 +11,36 @@ const lines = computed(() => {
     currency0.address,
     currency1.address,
   ]);
+
   const price = reversed
     ? 1 / store.state.pricePerToken0
     : store.state.pricePerToken0;
 
-  return [
-    {
-      key: "Price",
-      value: `1 ${store.state.model0.currency.symbol} ≈ ${price} ${store.state.model1.currency.symbol}`,
-    },
+  const lines = [];
+
+  if (store.state.pricePerToken0) {
+    lines.push({
+      key: `${currency0.symbol} Price`,
+      value: `1 ${currency0.symbol} ≈ ${price.toFixed(6)} ${currency1.symbol}`,
+    });
+  }
+
+  if (store.state.poolFee) {
+    lines.push({
+      key: "Pool fee",
+      value: `${store.state.poolFee / 10000}%`,
+    });
+  }
+
+  lines.push(
     {
       key: "Slippage tolerance",
       value: store.slippageTolerance,
     },
     { key: "Deadline", value: store.state.deadline + "s" },
-  ];
+  );
+
+  return lines;
 });
 </script>
 

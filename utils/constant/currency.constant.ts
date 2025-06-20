@@ -12,7 +12,14 @@ export const currencies: TokenCurrency[] = [
   {
     name: "KRK Token",
     symbol: "KRK",
-    address: "0x7419C891CCC5a19ab4c6A836E2b1536e25DFbb27",
+    address: "0xdcCe0c02C1e010b3e7F08225108fC9F026A75183",
+    decimals: 18,
+    popular: false,
+  },
+  {
+    name: "Okay Token",
+    symbol: "OKAY",
+    address: "0x56D43709A3463998Aac95683cE308eb3dCD3BE52",
     decimals: 18,
     popular: false,
   },

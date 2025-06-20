@@ -54,7 +54,11 @@ export const useSolariSwap = () => {
       params.tickUpper,
     );
 
-    return tx.wait();
+    await tx.wait();
+
+    return {
+      hash: tx.hash,
+    };
   };
 
   return {

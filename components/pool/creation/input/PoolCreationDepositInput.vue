@@ -20,6 +20,7 @@ import PriceRangeSelector from "~/components/pool/creation/range/PriceRangeSelec
 import Error from "~/components/layout/Error.vue";
 import type { InlineInputOption } from "~/utils/type/base.type";
 import { bigNumberWithSlippage } from "~/utils/function/currency.function";
+import type { StepperItem } from "@nuxt/ui";
 
 const runtimeConfig = useRuntimeConfig();
 const store = usePoolCreationStore();
@@ -44,7 +45,7 @@ watch(
   (after) => {
     const rate = store.state.initialPrice;
 
-    store.state.currency1Amount = after * rate;
+    store.state.currency1Amount = after * (1 / rate);
   },
 );
 
@@ -57,6 +58,18 @@ const isDisabled = computed(() => {
 
   return !account.value.isConnected;
 });
+
+const items = ref<StepperItem[]>([
+  {
+    title: `Approve ${store.symbol0}`,
+  },
+  {
+    title: `Approve ${store.symbol1}`,
+  },
+  {
+    title: "Deposit Liquidity",
+  },
+]);
 
 onMounted(async () => {
   currency0Balance.value = parseFloat(
@@ -97,7 +110,6 @@ const nextStep = async () => {
     await token1.approve(solariSwapAddress, amount1);
 
     const slippage = 2;
-    // const tickLower =
     await solariSwap.mintLiquidity({
       token0: store.state.currency0!.address,
       token1: store.state.currency1!.address,
@@ -108,6 +120,22 @@ const nextStep = async () => {
       amount1Min: bigNumberWithSlippage(amount1, slippage),
       tickLower: store.tickLower,
       tickUpper: store.tickUpper,
+    });
+
+    toast.add({
+      color: "success",
+      title: "Initial liquidity minted successfully",
+      actions: [
+        {
+          icon: "i-lucide-refresh-cw",
+          label: "View on explorer",
+          color: "neutral",
+          variant: "outline",
+          onClick: (e) => {
+            e?.stopPropagation();
+          },
+        },
+      ],
     });
   } catch (e: any) {
     toast.add({
@@ -180,6 +208,7 @@ const nextStep = async () => {
           </Error>
           <PoolCreationSummary />
         </Form>
+        <UStepper color="neutral" :items="items" class="w-full mt-4" />
         <template #footer>
           <div class="flex items-center gap-sm">
             <Button
