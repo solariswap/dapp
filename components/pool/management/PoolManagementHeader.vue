@@ -39,7 +39,7 @@ const imageCls = "w-16 h-16";
           <div class="flex items-center gap-3">
             <p class="font-bold text-3xl">{{ poolName }}</p>
             <Tick v-if="pool.isNew" type="success">New</Tick>
-            <Tick>Fee {{ pool.fee }}%</Tick>
+            <Tick>Fee {{ pool.fee / 1000 }}%</Tick>
           </div>
           <div class="flex items-center gap-4">
             <p>Pool ID: 1</p>

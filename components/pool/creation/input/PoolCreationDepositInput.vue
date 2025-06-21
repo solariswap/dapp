@@ -11,8 +11,6 @@ import Button from "~/components/base/input/Button.vue";
 import { useAppKitAccount } from "@reown/appkit/vue";
 import { useErc20Factory } from "~/composables/token/use-erc20.composable";
 import { ethers } from "ethers";
-import { usePoolFromParameters } from "~/composables/pools/use-pool.composable";
-import { tickToPrice } from "~/utils/function/tick.function";
 import { useSolariSwap } from "~/composables/web3/contracts/use-solari-swap.composable";
 import InlineInput from "~/components/base/input/InlineInput.vue";
 import Tip from "~/components/layout/Tip.vue";
@@ -21,6 +19,7 @@ import Error from "~/components/layout/Error.vue";
 import type { InlineInputOption } from "~/utils/type/base.type";
 import { bigNumberWithSlippage } from "~/utils/function/currency.function";
 import type { StepperItem } from "@nuxt/ui";
+import { useExplorer } from "~/composables/web3/use-explorer.composable";
 
 const runtimeConfig = useRuntimeConfig();
 const store = usePoolCreationStore();
@@ -28,17 +27,14 @@ const account = useAppKitAccount();
 const erc20Factory = useErc20Factory();
 const token0 = erc20Factory.construct(store.state.currency0!.address);
 const token1 = erc20Factory.construct(store.state.currency1!.address);
-const pool = usePoolFromParameters(
-  store.state.currency0!,
-  store.state.currency1!,
-  store.state.poolFee!,
-);
+const explorer = useExplorer();
 const solariSwap = useSolariSwap();
 const { $modal } = useNuxtApp();
 const toast = useToast();
 
 const currency0Balance = ref(0);
 const currency1Balance = ref(0);
+const currentStep = ref(0);
 
 watch(
   () => store.state.currency0Amount,
@@ -104,13 +100,16 @@ const nextStep = async () => {
     store.state.currency1Amount.toString(),
   );
 
+  currentStep.value = 0;
   store.state.loading = true;
   try {
     await token0.approve(solariSwapAddress, amount0);
+    currentStep.value++;
     await token1.approve(solariSwapAddress, amount1);
+    currentStep.value++;
 
     const slippage = 2;
-    await solariSwap.mintLiquidity({
+    const response = await solariSwap.mintLiquidity({
       token0: store.state.currency0!.address,
       token1: store.state.currency1!.address,
       plFee: store.state.poolFee!,
@@ -133,6 +132,8 @@ const nextStep = async () => {
           variant: "outline",
           onClick: (e) => {
             e?.stopPropagation();
+
+            explorer.open(explorer.getTransactionUrl(response.hash));
           },
         },
       ],
@@ -208,7 +209,12 @@ const nextStep = async () => {
           </Error>
           <PoolCreationSummary />
         </Form>
-        <UStepper color="neutral" :items="items" class="w-full mt-4" />
+        <UStepper
+          v-model="currentStep"
+          color="neutral"
+          :items="items"
+          class="w-full mt-4"
+        />
         <template #footer>
           <div class="flex items-center gap-sm">
             <Button
