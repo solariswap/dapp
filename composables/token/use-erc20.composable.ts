@@ -9,7 +9,11 @@ export const useErc20Factory = () => {
 
   const construct = (address: string) => {
     const getERC20Contract = () => {
-      return new ethers.Contract(address, ERC20.abi, provider.getSigner()!);
+      return new ethers.Contract(
+        address,
+        ERC20.abi,
+        provider.getStaticProvider()!,
+      );
     };
 
     const balanceOf = (to?: string) => {
