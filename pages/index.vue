@@ -2,6 +2,14 @@
 import Swapper from "~/components/swap/Swapper.vue";
 import SwapperSkeleton from "~/components/swap/skeleton/SwapperSkeleton.vue";
 import TextWordAppear from "~/components/base/animation/TextWordAppear.vue";
+
+const isReady = ref(false);
+
+onMounted(() => {
+  setTimeout(() => {
+    isReady.value = true;
+  }, 1000);
+});
 </script>
 
 <template>
@@ -11,7 +19,8 @@ import TextWordAppear from "~/components/base/animation/TextWordAppear.vue";
       text="Where DeFi moves at light speed"
     />
     <ClientOnly>
-      <Swapper />
+      <Swapper v-if="isReady" />
+      <SwapperSkeleton v-else />
       <template #fallback>
         <SwapperSkeleton />
       </template>

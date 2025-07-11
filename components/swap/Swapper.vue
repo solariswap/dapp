@@ -47,21 +47,13 @@ const invertTokens = () => {
 const swap = async () => {
   if (!swapper.value) return;
 
-  console.log("Passed swapper check:", swapper.value);
-
   if (!account.value.isConnected) return $modal.open();
 
-  console.log(
-    "Swapping tokens:",
-    store.state.model0.currency,
-    store.state.model1.currency,
-  );
   const token0 = erc20Factory.construct(store.state.model0.currency.address!);
 
   let hash = undefined;
   const tokenInDecimals = store.state.model0.currency.decimals;
   const tokenOutDecimals = store.state.model1.currency.decimals;
-  console.log("Token decimals:", tokenInDecimals, tokenOutDecimals);
 
   store.state.loading = true;
   try {
@@ -71,11 +63,6 @@ const swap = async () => {
         store.state.model0.amount!.toString(),
         tokenInDecimals,
       ),
-    );
-
-    console.log(
-      "Approval done for token:",
-      store.state.model0.currency.address,
     );
 
     if (store.state.mode === "quoteIn") {

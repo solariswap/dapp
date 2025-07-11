@@ -7,6 +7,7 @@ export const useProvider = () => {
 
   const getProvider = () => {
     if (!walletProvider) return null;
+    console.log("getProvider called with walletProvider:", walletProvider);
     return new ethers.providers.Web3Provider(
       walletProvider as any,
       runtimeConfig.public.chainId,
@@ -14,6 +15,7 @@ export const useProvider = () => {
   };
 
   const getStaticProvider = () => {
+    console.log("getStaticProvider called");
     return new ethers.providers.JsonRpcProvider(runtimeConfig.public.rpcUrl);
   };
 

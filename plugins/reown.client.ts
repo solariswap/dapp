@@ -3,7 +3,7 @@ import { Ethers5Adapter } from "@reown/appkit-adapter-ethers5";
 import { sepolia } from "viem/chains";
 
 export default defineNuxtPlugin(() => {
-  const projectId = "ebb0d9046114af26eabfb896c92fe593"; // from cloud.walletconnect.com
+  const projectId = "9559e8e6635b2112196b8c74f504e881"; // from cloud.walletconnect.com
   const metadata = {
     name: "SolariSwap",
     description: "DEX on Helios",
