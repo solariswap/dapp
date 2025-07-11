@@ -14,7 +14,7 @@ const socials = [
   { icon: "mdi:twitter", href: "https://x.com/solari_swap" },
   { icon: "mdi:github", href: "https://github.com/solariswap" },
   { icon: "mdi:telegram", href: "https://t.me/solariswap" },
-  { icon: "mdi:discord", href: "https://discord.gg/JYA2PaP6br" },
+  { icon: "mdi:discord", href: "https://discord.gg/NHn24QC3gu" },
 ];
 
 const categories: {
