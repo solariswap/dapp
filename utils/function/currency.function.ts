@@ -9,7 +9,7 @@ export const formatCurrency = (amount: number, prefix = "$") => {
   if (amount >= 1000) {
     return `${prefix}${(amount / 1000).toFixed(1)}K`;
   }
-  return `${prefix}${amount.toFixed(0)}`;
+  return `${prefix}${amount.toFixed(2)}`;
 };
 
 export const currencyToToken = (currency: TokenCurrency, chainId?: number) => {

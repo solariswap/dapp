@@ -6,10 +6,7 @@ import Button from "~/components/base/input/Button.vue";
 import { useSwapperStore } from "~/store/swapper.store";
 import { useModalStore } from "~/store/layout/modal.store";
 import SwapperSettingsModal from "~/components/swap/modal/SwapperSettingsModal.vue";
-import {
-  usePool,
-  usePoolManager,
-} from "~/composables/pools/use-pool.composable";
+import { usePool } from "~/composables/pools/use-pool.composable";
 import { useSwapperFactory } from "~/composables/pools/use-swapper.composable";
 import type { TokenCurrency } from "~/utils/type/base.type";
 import { BigNumber, ethers } from "ethers";

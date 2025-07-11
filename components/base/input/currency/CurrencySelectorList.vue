@@ -46,9 +46,7 @@ watchDebounced(
       const contract = new ethers.Contract(
         after,
         ERC20.abi,
-        new ethers.providers.JsonRpcProvider(
-          "https://testnet1.helioschainlabs.org",
-        ),
+        provider.getStaticProvider(),
       );
 
       try {

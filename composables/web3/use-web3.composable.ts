@@ -1,10 +1,10 @@
 import { ethers } from "ethers";
 
 export const useWeb3 = () => {
-  const chainId = 42000;
+  const runtimeConfig = useRuntimeConfig();
 
   const provider = new ethers.providers.JsonRpcProvider(
-    "https://testnet1.helioschainlabs.org",
+    runtimeConfig.public.rpcUrl,
   );
 
   const getBalance = async (address: string) => {
