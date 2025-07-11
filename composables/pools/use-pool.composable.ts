@@ -129,8 +129,6 @@ export const usePoolManager = () => {
       }),
     );
 
-    console.log(status);
-
     if (status.filter((p) => p.isCreated).length === 0)
       throw new Error("No pool found for the given currencies");
 

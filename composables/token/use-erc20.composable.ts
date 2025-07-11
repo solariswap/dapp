@@ -9,7 +9,6 @@ export const useErc20Factory = () => {
 
   const construct = (address: string) => {
     const getERC20Contract = () => {
-      console.log("getSigner", provider.getSigner());
       return new ethers.Contract(address, ERC20.abi, provider.getSigner()!);
     };
 
@@ -38,23 +37,15 @@ export const useErc20Factory = () => {
      * or void if no approval transaction is required.
      */
     const approve = async (spender: string, value: BigNumberish) => {
-      console.log("Approving spender:", spender, "for value:", value);
       const erc20 = getERC20Contract();
-      console.log("ERC20 contract:", erc20);
       const owner = account.value.address;
 
-      console.log("Owner address:", owner);
       // If the allowance is already greater or equal than the requested amount,
       // do not re-approve.
       const allowance = await erc20.allowance(owner, spender);
-      console.log("Current allowance:", allowance.toString());
       if (allowance.gte(value)) return;
-      console.log(
-        "Allowance is less than requested value, proceeding with approval.",
-      );
 
       const tx = await erc20.approve(spender, value);
-      console.log("Transaction sent:", tx.hash);
 
       return tx.wait();
     };
