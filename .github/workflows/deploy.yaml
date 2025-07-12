@@ -29,6 +29,6 @@ jobs:
 
             pnpm install
             pnpm run build
-            pm2 restart dapp || pm2 start .output/server/index.mjs --name dapp
+            pm2 startOrRestart ~/apps/ecosystem.config.js --only dapp
 
             echo -e "\033[0;32mDeployment completed successfully!\033[0m"
