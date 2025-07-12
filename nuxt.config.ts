@@ -17,6 +17,11 @@ export default defineNuxtConfig({
     "@nuxtjs/seo",
   ],
 
+  icon: {
+    mode: "css",
+    cssLayer: "base",
+  },
+
   site: {
     url: "https://solariswap.finance",
     name: "SolariSwap",
