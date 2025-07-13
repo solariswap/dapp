@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import Currency from "~/components/pool/Currency.vue";
-import type { TokenCurrency } from "~/utils/type/base.type";
 import { useModalStore } from "~/store/layout/modal.store";
 import TokenSelectorModal from "~/components/base/input/currency/modal/TokenSelectorModal.vue";
+import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
 
 const modalStore = useModalStore();
 
-const model = defineModel<TokenCurrency>();
+const model = defineModel<Hrc20Entity>();
 
 const openPoolCreationModal = () => {
   modalStore.open(TokenSelectorModal, { model: toRef(model, "value") });
@@ -23,7 +23,7 @@ const openPoolCreationModal = () => {
       v-if="model"
       :symbol="model.symbol"
       :name="model.name"
-      :logo="model.logoURI"
+      :logo="model.logoUri"
     />
     <span class="text-sm text-muted-foreground font-bold">Select</span>
   </button>

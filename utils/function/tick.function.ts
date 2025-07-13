@@ -1,7 +1,5 @@
 import { encodeSqrtRatioX96, TickMath } from "@uniswap/v3-sdk";
 import JSBI from "jsbi";
-import type { TokenCurrency } from "~/utils/type/base.type";
-import { currencyToToken } from "~/utils/function/currency.function";
 
 /**
  * Converts a given price to its corresponding tick representation.

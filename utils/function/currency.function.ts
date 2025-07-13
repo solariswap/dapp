@@ -1,6 +1,6 @@
-import type { TokenCurrency } from "~/utils/type/base.type";
 import { Token } from "@uniswap/sdk-core";
 import type { BigNumber } from "ethers";
+import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
 
 export const formatCurrency = (amount: number, prefix = "$") => {
   if (amount >= 1000000) {
@@ -12,7 +12,7 @@ export const formatCurrency = (amount: number, prefix = "$") => {
   return `${prefix}${amount.toFixed(2)}`;
 };
 
-export const currencyToToken = (currency: TokenCurrency, chainId?: number) => {
+export const currencyToToken = (currency: Hrc20Entity, chainId?: number) => {
   return new Token(
     chainId ?? 42000,
     currency.address,

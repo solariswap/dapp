@@ -1,3 +1,5 @@
+import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
+
 export type InlineInputOption<T = string | number> = {
   label: string;
   value: T;
@@ -18,7 +20,7 @@ export type TabListItem = {
 };
 
 export type TokenAmountModel = {
-  currency: TokenCurrency;
+  currency: Hrc20Entity;
   amount?: number;
 };
 
@@ -34,8 +36,8 @@ export type StatsCard = {
 
 export type Pool = {
   id: string;
-  token0: TokenCurrency;
-  token1: TokenCurrency;
+  token0: Hrc20Entity;
+  token1: Hrc20Entity;
   fee: number;
   tvl: number;
   apr: number;

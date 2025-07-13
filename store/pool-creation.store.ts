@@ -1,14 +1,14 @@
-import type { TokenCurrency } from "~/utils/type/base.type";
 import {
   SOLARI_MAX_TICK,
   SOLARI_MIN_TICK,
 } from "~/utils/constant/tick.constant";
 import { getTickFromAmounts } from "~/utils/function/tick.function";
+import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
 
 type StoreState = {
   step: number;
-  currency0?: TokenCurrency;
-  currency1?: TokenCurrency;
+  currency0?: Hrc20Entity;
+  currency1?: Hrc20Entity;
   poolFee?: number;
   initialPrice: number;
   basePrice: "base_price" | "quote_price";

@@ -1,4 +1,4 @@
-import type { TokenAmountModel, TokenCurrency } from "~/utils/type/base.type";
+import type { TokenAmountModel } from "~/utils/type/base.type";
 import { currencies } from "~/utils/constant/currency.constant";
 
 type StoreState = {

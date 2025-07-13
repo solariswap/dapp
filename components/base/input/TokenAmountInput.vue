@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import type { TokenAmountModel, TokenCurrency } from "~/utils/type/base.type";
+import type { TokenAmountModel } from "~/utils/type/base.type";
 import SmallCurrencySelector from "~/components/base/input/currency/SmallCurrencySelector.vue";
 import { useProvider } from "~/composables/web3/use-provider.composable";
 import { BigNumber, ethers } from "ethers";
 import ERC20 from "~/utils/abi/ERC20.json";
 import { useAppKitAccount } from "@reown/appkit/vue";
+import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
 
 const props = withDefaults(defineProps<{ loading?: boolean }>(), {
   loading: false,
 });
 const emit = defineEmits<{
   (e: "update-amount", amount?: number): void;
-  (e: "update-currency", currency: TokenCurrency): void;
+  (e: "update-currency", currency: Hrc20Entity): void;
 }>();
 
 const model = defineModel<TokenAmountModel>({ required: true });

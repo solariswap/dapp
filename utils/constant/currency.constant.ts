@@ -1,13 +1,13 @@
-import type { TokenCurrency } from "~/utils/type/base.type";
+import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
 
-export const currencies: TokenCurrency[] = [
+export const currencies: Hrc20Entity[] = [
   {
-    name: "Helios",
-    symbol: "HLS",
-    address: "0xD4949664cD82660AaE99bEdc034a0deA8A0bd517",
+    name: "WETH",
+    symbol: "WETH",
+    address: "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
     decimals: 18,
     popular: true,
-    logoURI: "/images/token/HLS.jpg",
+    logoUri: "/images/token/HLS.jpg",
   },
   {
     name: "KRK Token",
@@ -36,7 +36,7 @@ export const currencies: TokenCurrency[] = [
     address: "0x00002",
     decimals: 18,
     popular: true,
-    logoURI:
+    logoUri:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ethereum_logo_2014.svg/512px-Ethereum_logo_2014.svg.png",
   },
   {
@@ -45,7 +45,7 @@ export const currencies: TokenCurrency[] = [
     address: "0x00003",
     decimals: 18,
     popular: true,
-    logoURI:
+    logoUri:
       "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/2048px-Bitcoin.svg.png",
   },
   {
@@ -54,7 +54,7 @@ export const currencies: TokenCurrency[] = [
     address: "0x00004",
     decimals: 18,
     popular: true,
-    logoURI:
+    logoUri:
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsIsJL3zRgUrkD3yE3lD7LK0wZWSiRyY1GVg&s",
   },
   {
@@ -63,7 +63,7 @@ export const currencies: TokenCurrency[] = [
     address: "0x00005",
     decimals: 18,
     popular: false,
-    logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/52.png",
+    logoUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/52.png",
   },
   {
     name: "BNB",
@@ -71,7 +71,7 @@ export const currencies: TokenCurrency[] = [
     address: "0x00006",
     decimals: 18,
     popular: false,
-    logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png",
+    logoUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/1839.png",
   },
   {
     name: "Dogecoin",
@@ -79,7 +79,7 @@ export const currencies: TokenCurrency[] = [
     address: "0x00007",
     decimals: 18,
     popular: false,
-    logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/74.png",
+    logoUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/74.png",
   },
   {
     name: "Cardano",
@@ -87,6 +87,6 @@ export const currencies: TokenCurrency[] = [
     address: "0x00008",
     decimals: 18,
     popular: false,
-    logoURI: "https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png",
+    logoUri: "https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png",
   },
 ];

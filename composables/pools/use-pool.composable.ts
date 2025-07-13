@@ -2,9 +2,9 @@ import { useProvider } from "~/composables/web3/use-provider.composable";
 import { ethers } from "ethers";
 import { Pool } from "@uniswap/v3-sdk";
 import IUniswapV3PoolABI from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
-import type { TokenCurrency } from "~/utils/type/base.type";
 import { currencyToToken } from "~/utils/function/currency.function";
 import { FeeTiers } from "~/utils/constant/fee.constant";
+import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
 
 export const usePool = (
   poolAddress: string,
@@ -60,8 +60,8 @@ export const usePool = (
 };
 
 export const usePoolFromParameters = (
-  currency0: TokenCurrency,
-  currency1: TokenCurrency,
+  currency0: Hrc20Entity,
+  currency1: Hrc20Entity,
   plFee: number,
 ) => {
   const runtimeConfig = useRuntimeConfig();
@@ -84,8 +84,8 @@ export const usePoolManager = () => {
   const provider = useProvider();
 
   const getPoolFromCurrencies = async (
-    currency0: TokenCurrency,
-    currency1: TokenCurrency,
+    currency0: Hrc20Entity,
+    currency1: Hrc20Entity,
     ignoreLiquidity?: boolean,
   ) => {
     const sortedCurrencies = [currency0, currency1].sort((a, b) => {

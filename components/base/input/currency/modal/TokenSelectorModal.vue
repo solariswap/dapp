@@ -3,39 +3,69 @@ import PopupModal from "~/components/layout/modal/PopupModal.vue";
 import ModalHeader from "~/components/layout/modal/ModalHeader.vue";
 import TextInput from "~/components/base/input/TextInput.vue";
 import ModalBody from "~/components/layout/modal/ModalBody.vue";
-import type { TokenCurrency } from "~/utils/type/base.type";
 import PopularCurrencyInput from "~/components/base/input/currency/PopularCurrencyInput.vue";
 import Label from "~/components/base/form/Label.vue";
 import FormInput from "~/components/base/form/FormInput.vue";
 import { useModalStore } from "~/store/layout/modal.store";
 import CurrencySelectorList from "~/components/base/input/currency/CurrencySelectorList.vue";
-import { currencies } from "~/utils/constant/currency.constant";
+import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
+import { useHrc20Store } from "~/store/hrc20/hrc20.store";
+import { useHrc20Api } from "~/composables/api/hrc20-api.composable";
 
+const toast = useToast();
 const modalStore = useModalStore();
+const hrc20Store = useHrc20Store();
+const hrc20Api = useHrc20Api();
 
-const popularTokens = computed(() => currencies.filter((c) => c.popular));
+const fetchPage = async (query?: string) => {
+  const options = hrc20Store.getPaginationOptions();
 
-const searchInput = ref("");
+  try {
+    hrc20Store.setLoading(true);
+    const [response, popular] = await Promise.all([
+      hrc20Api.$find({ ...options, query }),
+      !hrc20Store.popularTokens?.length
+        ? hrc20Api.$findPopular()
+        : Promise.resolve(null),
+    ]);
 
-const filteredCurrencies = computed(() => {
-  if (!searchInput.value) return currencies;
+    hrc20Store.handleResponse(response);
+    if (popular) hrc20Store.setPopular(popular);
+  } catch (e: any) {
+    toast.add({
+      color: "error",
+      title: "An error occurred while fetching tokens",
+      description: e.message,
+    });
+  } finally {
+    hrc20Store.setLoading(false);
+  }
+};
 
-  return currencies.filter((c) => {
-    const input = searchInput.value.toLowerCase();
-
-    return (
-      c.name.toLowerCase().includes(input) ||
-      c.symbol.toLowerCase().includes(input) ||
-      c.address.toLowerCase().includes(input)
-    );
-  });
+onMounted(async () => {
+  await fetchPage();
 });
 
-const select = (currency: TokenCurrency) => {
-  const modalProps = modalStore.props as { model: Ref<TokenCurrency> };
+const nextPage = async () => {
+  if (hrc20Store.state.loading || !hrc20Store.hasNextPage) return;
 
-  modalProps.model.value = currency;
+  hrc20Store.setPage(hrc20Store.state.meta!.currentPage + 1);
+  await fetchPage();
+};
+
+const popularTokens = computed(() => hrc20Store.popularTokens);
+
+const select = (currency: Hrc20Entity) => {
+  const modalProps = modalStore.props as { model: Ref<Hrc20Entity> };
+
+  if (modalProps.model.value) modalProps.model.value! = currency;
   modalStore.close();
+};
+
+const updateSearch = async (query: string | undefined) => {
+  hrc20Store.setPage(1);
+  hrc20Store.state.tokens = [];
+  await fetchPage(query);
 };
 </script>
 
@@ -45,7 +75,7 @@ const select = (currency: TokenCurrency) => {
     <ModalBody>
       <div class="flex flex-col gap-sm h-[61svh]">
         <TextInput
-          v-model="searchInput"
+          v-model="hrc20Store.state.query"
           icon="mdi:search"
           placeholder="Search by name/symbol or enter the address"
         ></TextInput>
@@ -54,6 +84,7 @@ const select = (currency: TokenCurrency) => {
           <div class="overflow-auto w-full">
             <PopularCurrencyInput
               class="w-full"
+              v-if="popularTokens"
               :currencies="popularTokens"
               @select="select"
             />
@@ -62,8 +93,10 @@ const select = (currency: TokenCurrency) => {
         <div class="h-[1px] w-full bg-border shrink-0"></div>
         <CurrencySelectorList
           class="flex-1 overflow-auto"
-          :search-input="searchInput"
-          :currencies="filteredCurrencies"
+          :search-input="hrc20Store.state.query"
+          :currencies="hrc20Store.tokens"
+          @load-next="nextPage"
+          @update-search="updateSearch"
           @select="select"
         />
       </div>

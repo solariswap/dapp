@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import type { TokenCurrency } from "~/utils/type/base.type";
 import Currency from "~/components/pool/Currency.vue";
+import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
 
 defineProps<{
-  currencies: TokenCurrency[];
+  currencies: Hrc20Entity[];
 }>();
 
 const emit = defineEmits<{
-  (e: "select", currency: TokenCurrency): void;
+  (e: "select", currency: Hrc20Entity): void;
 }>();
 </script>
 
@@ -23,7 +23,7 @@ const emit = defineEmits<{
       <Currency
         :symbol="currency.symbol"
         :name="currency.name"
-        :logo="currency.logoURI"
+        :logo="currency.logoUri"
         :logo-size="24"
         hide-name
       />

@@ -1,33 +1,24 @@
 <script setup lang="ts">
-import type { TokenCurrency } from "~/utils/type/base.type";
 import Currency from "~/components/pool/Currency.vue";
 import { ethers } from "ethers";
 import { useProvider } from "~/composables/web3/use-provider.composable";
 import ERC20 from "~/utils/abi/ERC20.json";
+import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
 
 const props = defineProps<{
-  currencies: TokenCurrency[];
+  currencies: Hrc20Entity[];
   searchInput?: string;
 }>();
 
 const emit = defineEmits<{
-  (e: "select", currency: TokenCurrency): void;
+  (e: "select", currency: Hrc20Entity): void;
+  (e: "load-next"): void;
+  (e: "update-search", search: string | undefined): void;
 }>();
 
-const customCurrency = ref<TokenCurrency | null>(null);
+const customCurrency = ref<Hrc20Entity | null>(null);
 
 const provider = useProvider();
-
-// const customCurrency = computed((): TokenCurrency | null => {
-//   if (!props.searchInput) return null;
-//
-//   return {
-//     address: props.searchInput,
-//     decimals: 18,
-//     name: "10",
-//     symbol: "ABC",
-//   };
-// });
 
 const queryIsAddress = computed(() => {
   if (!props.searchInput) return false;
@@ -39,9 +30,36 @@ const isCustom = computed(
   () => queryIsAddress.value && !props.currencies.length,
 );
 
+onMounted(() => {
+  const scrollElement = document.getElementById("currencies");
+
+  if (scrollElement) {
+    scrollElement.addEventListener("scroll", handleScroll);
+  }
+});
+
+onBeforeUnmount(() => {
+  const scrollElement = document.getElementById("currencies");
+
+  if (scrollElement) {
+    scrollElement.removeEventListener("scroll", handleScroll);
+  }
+});
+
+const handleScroll = () => {
+  const scrollElement = document.getElementById("currencies");
+  if (!scrollElement) return;
+
+  const { scrollTop, scrollHeight, clientHeight } = scrollElement;
+  if (scrollTop + clientHeight >= scrollHeight - 5) {
+    emit("load-next");
+  }
+};
+
 watchDebounced(
   () => props.searchInput,
   async (after) => {
+    emit("update-search", after);
     if (isCustom.value && after) {
       const contract = new ethers.Contract(
         after,
@@ -61,6 +79,7 @@ watchDebounced(
           decimals,
           name,
           symbol,
+          popular: false,
         };
       } catch (e) {
         console.log(e);
@@ -77,10 +96,10 @@ watchDebounced(
       <p>Token</p>
       <p>Address</p>
     </div>
-    <div class="overflow-y-auto flex-1">
+    <div id="currencies" class="overflow-y-auto flex-1">
       <button
         v-for="currency in currencies"
-        :key="`cs-${currency.name}`"
+        :key="currency.address"
         type="button"
         class="w-full py-xs px-xs hover:bg-accent"
         @click="emit('select', currency)"
@@ -88,7 +107,7 @@ watchDebounced(
         <Currency
           :symbol="currency.symbol"
           :name="currency.name"
-          :logo="currency.logoURI"
+          :logo="currency.logoUri"
           :address="currency.address"
         />
       </button>
@@ -101,7 +120,7 @@ watchDebounced(
         <Currency
           :symbol="customCurrency.symbol"
           :name="customCurrency.name"
-          :logo="customCurrency.logoURI"
+          :logo="customCurrency.logoUri"
           :address="customCurrency.address"
         />
       </button>

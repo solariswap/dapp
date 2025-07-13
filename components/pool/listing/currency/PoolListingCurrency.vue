@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import type { TokenCurrency } from "~/utils/type/base.type";
 import CurrencyImage from "~/components/pool/CurrencyImage.vue";
+import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
 
 const props = defineProps<{
-  currency0: TokenCurrency;
-  currency1: TokenCurrency;
+  currency0: Hrc20Entity;
+  currency1: Hrc20Entity;
 }>();
 
-const image1 = computed(() => props.currency0.logoURI);
-const image2 = computed(() => props.currency1.logoURI);
+const image1 = computed(() => props.currency0.logoUri);
+const image2 = computed(() => props.currency1.logoUri);
 const symbol0 = computed(() => props.currency0.symbol);
 const symbol1 = computed(() => props.currency1.symbol);
 

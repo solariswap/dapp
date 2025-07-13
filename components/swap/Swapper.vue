@@ -8,7 +8,6 @@ import { useModalStore } from "~/store/layout/modal.store";
 import SwapperSettingsModal from "~/components/swap/modal/SwapperSettingsModal.vue";
 import { usePool } from "~/composables/pools/use-pool.composable";
 import { useSwapperFactory } from "~/composables/pools/use-swapper.composable";
-import type { TokenCurrency } from "~/utils/type/base.type";
 import { BigNumber, ethers } from "ethers";
 import { tickToPrice } from "~/utils/function/tick.function";
 import { useErc20Factory } from "~/composables/token/use-erc20.composable";
@@ -16,6 +15,7 @@ import { fromReadableAmount } from "~/utils/function/token.function";
 import { useAppKitAccount } from "@reown/appkit/vue";
 import { useQuoterApi } from "~/composables/api/quoter-api.composable";
 import { useProvider } from "~/composables/web3/use-provider.composable";
+import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
 
 const toast = useToast();
 const { $modal } = useNuxtApp();
@@ -212,7 +212,7 @@ const quoteOutUpdate = async () => {
 
 const onCurrencyChange = async (
   mode: "quoteIn" | "quoteOut",
-  old: TokenCurrency,
+  old: Hrc20Entity,
 ) => {
   const address0 = store.state.model0.currency.address;
   const address1 = store.state.model1.currency.address;
