@@ -10,11 +10,13 @@ export const currencies: Hrc20Entity[] = [
     logoUri: "/images/token/HLS.jpg",
   },
   {
-    name: "KRK Token",
-    symbol: "KRK",
-    address: "0x70e74Fc032B0c4A0D90110ED0147D57dbd4E5F4e",
+    name: "WETH",
+    symbol: "WETH",
+    address: "0x80b5a32e4f032b2a058b4f29ec95eefeeb87adcd",
     decimals: 18,
-    popular: false,
+    popular: true,
+    logoUri:
+      "https://testnet1-cdn.helioschainlabs.org/hash/45fa0204dcbb461f9899168a8b56162ecc832919b0c8b81b85f7de2abba408aa",
   },
   {
     name: "LRL Token",
