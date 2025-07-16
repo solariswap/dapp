@@ -1,6 +1,5 @@
 import { createAppKit, useAppKit } from "@reown/appkit/vue";
 import { Ethers5Adapter } from "@reown/appkit-adapter-ethers5";
-import { sepolia } from "viem/chains";
 
 export default defineNuxtPlugin(() => {
   const projectId = "9559e8e6635b2112196b8c74f504e881"; // from cloud.walletconnect.com
@@ -30,11 +29,9 @@ export default defineNuxtPlugin(() => {
 
   // Initialize Web3Modal (WalletConnect v2) with ethers.js
   createAppKit({
+    metadata,
     adapters: [new Ethers5Adapter()],
-    networks: [
-      // heliosChain,
-      sepolia,
-    ],
+    networks: [heliosChain],
     projectId,
     features: {
       analytics: true, // Optional - defaults to your Cloud configuration
