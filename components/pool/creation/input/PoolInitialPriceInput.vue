@@ -38,12 +38,14 @@ onMounted(async () => {
     store.state.currency1!,
     true,
   );
-  const tick = await pool.getTick();
+  try {
+    const tick = await pool.getTick();
 
-  if (!tick) return;
+    if (!tick) return;
 
-  marketPrice.value = tickToPrice(tick);
-  if (marketPrice.value) store.initMarketPrice(marketPrice.value);
+    marketPrice.value = tickToPrice(tick);
+    if (marketPrice.value) store.initMarketPrice(marketPrice.value);
+  } catch {}
 });
 
 watch(
