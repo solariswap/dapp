@@ -63,9 +63,7 @@ const goTo = (social: { href: string }) => {
         <div class="flex flex-col gap-4">
           <Logo />
           <p class="text-muted-foreground text-sm font-medium leading-relaxed">
-            The first native DEX on Helios enabling cross-chain swaps,
-            automation, and MEV-resistant execution powered by interchain
-            staking.
+            First native DEX on Helios
           </p>
           <div class="flex items-center gap-sm">
             <SquareButton
