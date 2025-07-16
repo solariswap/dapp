@@ -43,6 +43,8 @@ const fetchPage = async (query?: string) => {
 };
 
 onMounted(async () => {
+  if (hrc20Store.state.tokens.length) return;
+
   await fetchPage();
 });
 
