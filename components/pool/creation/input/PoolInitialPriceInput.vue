@@ -117,14 +117,14 @@ const nextStep = async () => {
   const amount1 = basePrice ? store.state.initialPrice : 1;
 
   const initialTick = getTickFromAmounts(
-    amount1,
     amount0,
-    store.state.currency1!.decimals,
+    amount1,
     store.state.currency0!.decimals,
+    store.state.currency1!.decimals,
   );
 
-  // console.log("Initial Tick:", initialTick);
-  // return;
+  console.log("Initial Tick:", initialTick);
+  return;
 
   store.state.loading = true;
   try {
