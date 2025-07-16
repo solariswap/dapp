@@ -58,10 +58,16 @@ export function getTickFromAmounts(
   decimals0: number,
   decimals1: number,
 ): number {
-  console.log(amount0, amount1, decimals0, decimals1);
+  console.log(
+    amount0,
+    amount1,
+    decimals0,
+    decimals1,
+    amount1 * 10 ** decimals1,
+  );
   // Normalize the ratio to 18-decimal precision by default
-  const scaledAmount0 = JSBI.BigInt((amount0 * 10 ** decimals0).toFixed(0));
-  const scaledAmount1 = JSBI.BigInt((amount1 * 10 ** decimals1).toFixed(0));
+  const scaledAmount0 = JSBI.BigInt(amount0 * 10 ** decimals0);
+  const scaledAmount1 = JSBI.BigInt(amount1 * 10 ** decimals1);
 
   // Encode to sqrtPriceX96
   const sqrtPriceX96 = encodeSqrtRatioX96(scaledAmount1, scaledAmount0);
