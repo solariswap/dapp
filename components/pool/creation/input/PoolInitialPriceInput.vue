@@ -125,9 +125,6 @@ const nextStep = async () => {
     store.state.currency1!.decimals,
   );
 
-  console.log("Initial Tick:", initialTick);
-  return;
-
   store.state.loading = true;
   try {
     await solariSwap.createPool({
