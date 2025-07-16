@@ -56,13 +56,12 @@ const handleScroll = () => {
   }
 };
 
-watchDebounced(
-  () => props.searchInput,
+watch(
+  () => props.currencies,
   async (after) => {
-    emit("update-search", after);
-    if (isCustom.value && after) {
+    if (isCustom.value && !after.length && props.searchInput) {
       const contract = new ethers.Contract(
-        after,
+        props.searchInput,
         ERC20.abi,
         provider.getStaticProvider(),
       );
@@ -75,7 +74,7 @@ watchDebounced(
         ]);
 
         customCurrency.value = {
-          address: after,
+          address: props.searchInput,
           decimals,
           name,
           symbol,
@@ -86,6 +85,13 @@ watchDebounced(
         // Token isn't found or not ERC20 compatible
       }
     }
+  },
+);
+
+watchDebounced(
+  () => props.searchInput,
+  async (after) => {
+    emit("update-search", after);
   },
 );
 </script>

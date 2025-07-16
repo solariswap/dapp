@@ -1,21 +1,31 @@
 <script setup lang="ts">
-import type { Pool } from "~/utils/type/base.type";
 import CurrencyImage from "~/components/pool/CurrencyImage.vue";
 import Tick from "~/components/layout/Tick.vue";
 import Button from "~/components/base/input/Button.vue";
+import type { PoolEntity } from "~/utils/type/entity/pool-entity.type";
 
 const props = defineProps<{
-  pool: Pool;
+  entity: PoolEntity;
 }>();
 
-const image1 = computed(() => props.pool.token0.logoURI);
-const image2 = computed(() => props.pool.token1.logoURI);
-const symbol0 = computed(() => props.pool.token0.symbol);
-const symbol1 = computed(() => props.pool.token1.symbol);
+const image1 = computed(() => props.entity.token0.logoUri);
+const image2 = computed(() => props.entity.token1.logoUri);
+const symbol0 = computed(() => props.entity.token0.symbol);
+const symbol1 = computed(() => props.entity.token1.symbol);
 
-const poolName = computed(
-  () => `${props.pool.token0.symbol}/${props.pool.token1.symbol}`,
+const poolEntityName = computed(
+  () => `${props.entity.token0.symbol}/${props.entity.token1.symbol}`,
 );
+
+const isNew = computed(() => {
+  if (!props.entity.createdAt) return;
+
+  const createdAt = new Date(props.entity.createdAt);
+  // Check if the pool entity was created within the last 7 days
+  const now = new Date();
+  const sevenDaysAgo = new Date(now.setDate(now.getDate() - 7));
+  return createdAt >= sevenDaysAgo;
+});
 
 const imageCls = "w-16 h-16";
 </script>
@@ -37,9 +47,9 @@ const imageCls = "w-16 h-16";
         </div>
         <div class="flex flex-col gap-2">
           <div class="flex items-center gap-3">
-            <p class="font-bold text-3xl">{{ poolName }}</p>
-            <Tick v-if="pool.isNew" type="success">New</Tick>
-            <Tick>Fee {{ pool.fee / 1000 }}%</Tick>
+            <p class="font-bold text-3xl">{{ poolEntityName }}</p>
+            <Tick v-if="isNew" type="success">New</Tick>
+            <Tick>Fee {{ entity.fee / 1000 }}%</Tick>
           </div>
           <div class="flex items-center gap-4">
             <p>Pool ID: 1</p>

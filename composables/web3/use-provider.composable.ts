@@ -9,13 +9,16 @@ export const useProvider = () => {
   const getProvider = () => {
     if (!walletProvider) return null;
     return new ethers.providers.Web3Provider(walletProvider, {
-      name: "Sepolia ETH",
+      name: runtimeConfig.public.chainName,
       chainId: parseInt(runtimeConfig.public.chainId, 10),
     });
   };
 
   const getStaticProvider = () => {
-    return new ethers.providers.JsonRpcProvider(runtimeConfig.public.rpcUrl);
+    return new ethers.providers.JsonRpcProvider(runtimeConfig.public.rpcUrl, {
+      name: runtimeConfig.public.chainName,
+      chainId: parseInt(runtimeConfig.public.chainId, 10),
+    });
   };
 
   const getSigner = () => {

@@ -159,7 +159,7 @@ const quoteInUpdate = async () => {
     toast.add({
       color: "error",
       title: "An error occurred while fetching the quote.",
-      description: e.message,
+      description: e.data.message,
     });
   } finally {
     store.state.model1Loading = false;

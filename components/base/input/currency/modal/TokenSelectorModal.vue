@@ -58,7 +58,7 @@ const popularTokens = computed(() => hrc20Store.popularTokens);
 const select = (currency: Hrc20Entity) => {
   const modalProps = modalStore.props as { model: Ref<Hrc20Entity> };
 
-  if (modalProps.model.value) modalProps.model.value! = currency;
+  if (modalProps.model) modalProps.model.value! = currency;
   modalStore.close();
 };
 

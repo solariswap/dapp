@@ -12,7 +12,7 @@ export const formatCurrency = (amount: number, prefix = "$") => {
   return `${prefix}${amount.toFixed(2)}`;
 };
 
-export const currencyToToken = (currency: Hrc20Entity, chainId?: number) => {
+export const hrc20ToToken = (currency: Hrc20Entity, chainId?: number) => {
   return new Token(
     chainId ?? 42000,
     currency.address,

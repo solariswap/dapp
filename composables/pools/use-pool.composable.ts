@@ -1,10 +1,11 @@
 import { useProvider } from "~/composables/web3/use-provider.composable";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { Pool } from "@uniswap/v3-sdk";
 import IUniswapV3PoolABI from "@uniswap/v3-core/artifacts/contracts/interfaces/IUniswapV3Pool.sol/IUniswapV3Pool.json";
-import { currencyToToken } from "~/utils/function/currency.function";
+import { hrc20ToToken } from "~/utils/function/currency.function";
 import { FeeTiers } from "~/utils/constant/fee.constant";
 import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
+import type { GetPoolPayload } from "~/utils/type/composable/pools-composable.type";
 
 export const usePool = (
   poolAddress: string,
@@ -28,6 +29,12 @@ export const usePool = (
     return slot0.tick;
   };
 
+  const getSlot0 = async () => {
+    const pool = getPool();
+
+    return await pool.slot0();
+  };
+
   const getFee = () => {
     const pool = getPool();
 
@@ -37,7 +44,7 @@ export const usePool = (
   const getLiquidity = async () => {
     const pool = getPool();
 
-    return BigInt(pool.liquidity());
+    return BigNumber.from(await pool.liquidity());
   };
 
   const getTokens = async (): Promise<[string, string]> => {
@@ -50,12 +57,33 @@ export const usePool = (
     return poolAddress;
   };
 
+  const getPayload = async (): Promise<GetPoolPayload> => {
+    const [[token0, token1], fee, liquidity, tick] = await Promise.all([
+      getTokens(),
+      getFee(),
+      getLiquidity(),
+      getTick(),
+    ]);
+
+    return {
+      address: poolAddress,
+      token0,
+      token1,
+      fee,
+      liquidity,
+      tick,
+    };
+  };
+
   return {
+    getPayload,
+
     getTick,
     getFee,
     getLiquidity,
     getTokens,
     getAddress,
+    getSlot0,
   };
 };
 
@@ -66,8 +94,8 @@ export const usePoolFromParameters = (
 ) => {
   const runtimeConfig = useRuntimeConfig();
 
-  const token0 = currencyToToken(currency0);
-  const token1 = currencyToToken(currency1);
+  const token0 = hrc20ToToken(currency0);
+  const token1 = hrc20ToToken(currency1);
   const address = Pool.getAddress(
     token0,
     token1,
@@ -92,8 +120,8 @@ export const usePoolManager = () => {
       return a.address.localeCompare(b.address);
     });
 
-    const token0 = currencyToToken(sortedCurrencies[0]);
-    const token1 = currencyToToken(sortedCurrencies[1]);
+    const token0 = hrc20ToToken(sortedCurrencies[0]);
+    const token1 = hrc20ToToken(sortedCurrencies[1]);
 
     const addresses = FeeTiers.map((plFee) => {
       return Pool.getAddress(
