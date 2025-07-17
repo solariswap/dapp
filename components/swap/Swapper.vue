@@ -16,6 +16,7 @@ import { useAppKitAccount } from "@reown/appkit/vue";
 import { useQuoterApi } from "~/composables/api/quoter-api.composable";
 import { useProvider } from "~/composables/web3/use-provider.composable";
 import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
+import { useExplorer } from "~/composables/web3/use-explorer.composable";
 
 const toast = useToast();
 const { $modal } = useNuxtApp();
@@ -28,6 +29,7 @@ const swapperFactory = useSwapperFactory();
 const quoterApi = useQuoterApi();
 const pool = ref<ReturnType<typeof usePool>>();
 const provider = useProvider();
+const explorer = useExplorer();
 const swapper = ref<ReturnType<typeof swapperFactory.construct>>();
 
 const openSettings = () => {
@@ -108,7 +110,19 @@ const swap = async () => {
     toast.add({
       color: "success",
       title: "Swap completed",
-      description: `Transaction hash: ${hash}`,
+      actions: [
+        {
+          icon: "i-lucide-refresh-cw",
+          label: "View on explorer",
+          color: "neutral",
+          variant: "outline",
+          onClick: (e) => {
+            e?.stopPropagation();
+
+            explorer.open(explorer.getTransactionUrl(hash));
+          },
+        },
+      ],
     });
     store.state.model0.amount = 0;
     store.state.model1.amount = 0;
