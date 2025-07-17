@@ -110,6 +110,8 @@ const swap = async () => {
       title: "Swap completed",
       description: `Transaction hash: ${hash}`,
     });
+    store.state.model0.amount = 0;
+    store.state.model1.amount = 0;
   } catch (e: any) {
     console.log(e);
     toast.add({
