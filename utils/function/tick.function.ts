@@ -1,5 +1,6 @@
 import { encodeSqrtRatioX96, TickMath } from "@uniswap/v3-sdk";
 import JSBI from "jsbi";
+import type { FeeTier } from "~/utils/constant/fee.constant";
 
 /**
  * Converts a given price to its corresponding tick representation.
@@ -43,6 +44,21 @@ export const priceToSqrtPriceX96 = (price: number) => {
   return TickMath.getSqrtRatioAtTick(tick);
 };
 
+export const getTickSpacing = (fee: FeeTier): number => {
+  switch (fee) {
+    case 100:
+      return 1;
+    case 500:
+      return 10;
+    case 3000:
+      return 60;
+    case 10000:
+      return 200;
+    default:
+      throw new Error("Unsupported fee tier");
+  }
+};
+
 /**
  * Calculate the closest tick for a given token0/token1 amount ratio.
  *
@@ -50,6 +66,7 @@ export const priceToSqrtPriceX96 = (price: number) => {
  * @param amount1 Token1 amount (raw integer or float)
  * @param decimals0 Decimals of token0
  * @param decimals1 Decimals of token1
+ * @param fee
  * @returns Closest tick as an integer
  */
 export function getTickFromAmounts(
@@ -57,14 +74,17 @@ export function getTickFromAmounts(
   amount1: number,
   decimals0: number,
   decimals1: number,
+  fee: FeeTier,
 ): number {
   // Normalize the ratio to 18-decimal precision by default
-  const scaledAmount0 = JSBI.BigInt(amount0 * 10 ** decimals0);
-  const scaledAmount1 = JSBI.BigInt(amount1 * 10 ** decimals1);
-
+  const scaledAmount0 = JSBI.BigInt(Math.ceil(amount0 * 10 ** decimals0));
+  const scaledAmount1 = JSBI.BigInt(Math.ceil(amount1 * 10 ** decimals1));
   // Encode to sqrtPriceX96
   const sqrtPriceX96 = encodeSqrtRatioX96(scaledAmount1, scaledAmount0);
 
+  const tickSpacing = getTickSpacing(fee);
   // Convert to the nearest tick
-  return TickMath.getTickAtSqrtRatio(sqrtPriceX96);
+  const tick = TickMath.getTickAtSqrtRatio(sqrtPriceX96);
+
+  return Math.floor(tick / tickSpacing) * tickSpacing;
 }

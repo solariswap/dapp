@@ -21,6 +21,7 @@ import {
 } from "~/utils/function/tick.function";
 import { usePoolManager } from "~/composables/pools/use-pool.composable";
 import { useAppKitAccount } from "@reown/appkit/vue";
+import type { FeeTier } from "~/utils/constant/fee.constant";
 
 const store = usePoolCreationStore();
 const poolManager = usePoolManager();
@@ -43,7 +44,7 @@ onMounted(async () => {
 
     if (!tick) return;
 
-    marketPrice.value = tickToPrice(tick);
+    marketPrice.value = 1 / tickToPrice(tick);
     if (marketPrice.value) store.initMarketPrice(marketPrice.value);
   } catch {}
 });
@@ -115,15 +116,25 @@ const nextStep = async () => {
   if (!account.value.isConnected) return $modal.open();
 
   const basePrice = store.state.basePrice === "base_price";
-  const amount0 = basePrice ? 1 : store.state.initialPrice;
-  const amount1 = basePrice ? store.state.initialPrice : 1;
+  const amount0 = basePrice ? store.state.initialPrice : 1;
+  const amount1 = basePrice ? 1 : store.state.initialPrice;
+  const currency0Decimals = basePrice
+    ? store.state.currency0!.decimals
+    : store.state.currency1!.decimals;
+  const currency1Decimals = basePrice
+    ? store.state.currency1!.decimals
+    : store.state.currency0!.decimals;
 
   const initialTick = getTickFromAmounts(
     amount0,
     amount1,
-    store.state.currency0!.decimals,
-    store.state.currency1!.decimals,
+    currency0Decimals,
+    currency1Decimals,
+    store.state.poolFee! as FeeTier,
   );
+
+  // console.log("initialTick", initialTick);
+  // return;
 
   store.state.loading = true;
   try {

@@ -2,8 +2,12 @@ import {
   SOLARI_MAX_TICK,
   SOLARI_MIN_TICK,
 } from "~/utils/constant/tick.constant";
-import { getTickFromAmounts } from "~/utils/function/tick.function";
+import {
+  getTickFromAmounts,
+  getTickSpacing,
+} from "~/utils/function/tick.function";
 import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
+import type { FeeTier } from "~/utils/constant/fee.constant";
 
 type StoreState = {
   step: number;
@@ -89,10 +93,11 @@ export const usePoolCreationStore = defineStore("poolCreationStore", () => {
     const priceLower = state.value.priceRange[0];
     if (!priceLower || isFull) return SOLARI_MIN_TICK;
 
-    const decimals0 = state.value.currency0?.decimals ?? 18;
-    const decimals1 = state.value.currency1?.decimals ?? 18;
+    const logBase = Math.log(1.0001);
+    const tick = Math.ceil(Math.log(1 / priceLower) / logBase);
+    const tickSpacing = getTickSpacing(state.value.poolFee! as FeeTier);
 
-    return getTickFromAmounts(1, priceLower, decimals0, decimals1);
+    return Math.ceil(tick / tickSpacing) * tickSpacing;
   });
 
   const tickUpper = computed(() => {
@@ -101,10 +106,16 @@ export const usePoolCreationStore = defineStore("poolCreationStore", () => {
     const priceUpper = state.value.priceRange[1];
     if (!priceUpper || isFull) return SOLARI_MAX_TICK;
 
-    const decimals0 = state.value.currency0?.decimals ?? 18;
-    const decimals1 = state.value.currency1?.decimals ?? 18;
+    const amount0 = priceUpper;
+    const amount1 = 1;
+    const currency0Decimals = state.value.currency0!.decimals;
+    const currency1Decimals = state.value.currency1!.decimals;
 
-    return getTickFromAmounts(1, priceUpper, decimals0, decimals1);
+    const logBase = Math.log(1.0001);
+    const tick = Math.ceil(Math.log(1 / priceUpper) / logBase);
+    const tickSpacing = getTickSpacing(state.value.poolFee! as FeeTier);
+
+    return Math.ceil(tick / tickSpacing) * tickSpacing;
   });
 
   return {

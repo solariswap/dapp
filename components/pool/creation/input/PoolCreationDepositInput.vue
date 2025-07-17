@@ -10,7 +10,7 @@ import Hint from "~/components/base/form/Hint.vue";
 import Button from "~/components/base/input/Button.vue";
 import { useAppKitAccount } from "@reown/appkit/vue";
 import { useErc20Factory } from "~/composables/token/use-erc20.composable";
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import { useSolariSwap } from "~/composables/web3/contracts/use-solari-swap.composable";
 import InlineInput from "~/components/base/input/InlineInput.vue";
 import Tip from "~/components/layout/Tip.vue";
@@ -20,11 +20,15 @@ import type { InlineInputOption } from "~/utils/type/base.type";
 import { bigNumberWithSlippage } from "~/utils/function/currency.function";
 import type { StepperItem } from "@nuxt/ui";
 import { useExplorer } from "~/composables/web3/use-explorer.composable";
+import { usePosm } from "~/composables/pools/use-posm.composable";
+import { useFactory } from "~/composables/pools/use-factory.composable";
 
 const runtimeConfig = useRuntimeConfig();
 const store = usePoolCreationStore();
 const account = useAppKitAccount();
 const erc20Factory = useErc20Factory();
+const factory = useFactory();
+const posm = usePosm();
 const token0 = erc20Factory.construct(store.state.currency0!.address);
 const token1 = erc20Factory.construct(store.state.currency1!.address);
 const explorer = useExplorer();
@@ -92,6 +96,7 @@ const nextStep = async () => {
   if (!account.value.isConnected) return $modal.open();
 
   const { solariSwapAddress } = runtimeConfig.public;
+  const posmAddress = "0x362f131bbd5FBcDD8E18A1F4D4141564Bfa9A081";
 
   const amount0 = ethers.utils.parseEther(
     store.state.currency0Amount.toString(),
@@ -103,23 +108,48 @@ const nextStep = async () => {
   currentStep.value = 0;
   store.state.loading = true;
   try {
-    await token0.approve(solariSwapAddress, amount0);
+    await token0.approve(posmAddress, amount0);
     currentStep.value++;
-    await token1.approve(solariSwapAddress, amount1);
+    await token1.approve(posmAddress, amount1);
     currentStep.value++;
 
     const slippage = 2;
-    const response = await solariSwap.mintLiquidity({
+
+    const tickLower = Math.min(store.tickLower, store.tickUpper);
+    const tickUpper = Math.max(store.tickLower, store.tickUpper);
+
+    const response = await posm.mint({
       token0: store.state.currency0!.address,
       token1: store.state.currency1!.address,
-      plFee: store.state.poolFee!,
-      amount0,
-      amount1,
-      amount0Min: bigNumberWithSlippage(amount0, slippage),
-      amount1Min: bigNumberWithSlippage(amount1, slippage),
-      tickLower: store.tickLower,
-      tickUpper: store.tickUpper,
+      fee: store.state.poolFee!,
+      amount0Desired: BigNumber.from(amount0),
+      amount1Desired: BigNumber.from(amount1),
+      amount0Min: BigNumber.from(0),
+      amount1Min: BigNumber.from(0),
+      tickLower: tickLower,
+      tickUpper: tickUpper,
+      recipient: account.value.address,
+      deadline: BigNumber.from(Date.now())
+        .div(1000)
+        .add(60 * 20), // 20 minutes
     });
+
+    // await posm.decreaseLiquidity({
+    //   tokenId: 1,
+    //   liquidity: BigNumber.from(8480807996211616008131492n),
+    //   amount0Min: BigNumber.from(0),
+    //   amount1Min: BigNumber.from(0),
+    //   deadline: BigNumber.from(Date.now())
+    //     .div(1000)
+    //     .add(60 * 20), // 20 minutes
+    // });
+    //
+    // await posm.collect({
+    //   tokenId: 1,
+    //   recipient: account.value.address,
+    //   amount0Max: BigNumber.from("0xffffffffffffffffffffffffffffffff"),
+    //   amount1Max: BigNumber.from("0xffffffffffffffffffffffffffffffff"),
+    // });
 
     toast.add({
       color: "success",
@@ -138,11 +168,12 @@ const nextStep = async () => {
         },
       ],
     });
-  } catch (e: any) {
+  } catch (err: any) {
+    console.error("❌ Simulation reverted:", err);
     toast.add({
       color: "error",
       title: "Error minting liquidity",
-      description: e.reason,
+      description: err.reason,
     });
   } finally {
     store.state.loading = false;
