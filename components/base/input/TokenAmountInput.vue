@@ -6,6 +6,7 @@ import { BigNumber, ethers } from "ethers";
 import ERC20 from "~/utils/abi/ERC20.json";
 import { useAppKitAccount } from "@reown/appkit/vue";
 import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
+import { formatTokenDecimals } from "~/utils/function/currency.function";
 
 const props = withDefaults(defineProps<{ loading?: boolean }>(), {
   loading: false,
@@ -18,16 +19,22 @@ const emit = defineEmits<{
 const model = defineModel<TokenAmountModel>({ required: true });
 const account = useAppKitAccount();
 
-const balance = ref<number>();
+const error = ref<boolean>(false);
+const balance = ref<BigNumber>();
 const rawInput = ref("");
 const provider = useProvider();
 const inputRef = ref<HTMLInputElement>();
 
 const balanceVisible = computed(() => !!model.value.currency);
 const balanceLabel = computed(() => {
-  if (!balance.value) return `Balance: 0 ${model.value.currency.symbol}`;
-
-  return `Balance: ${Number(balance.value).toFixed(4)} ${model.value.currency.symbol}`;
+  const formatted = formatTokenDecimals(
+    balance.value ?? 0,
+    model.value.currency,
+    {
+      maxDecimals: 4,
+    },
+  );
+  return `Balance: ${formatted}`;
 });
 
 const onUpdate = async (erc20Address: string) => {
@@ -38,8 +45,7 @@ const onUpdate = async (erc20Address: string) => {
   const contract = new ethers.Contract(erc20Address, ERC20.abi, _provider);
 
   try {
-    const amount = BigNumber.from(await contract.balanceOf(address));
-    balance.value = Number(ethers.utils.formatEther(amount.toBigInt()));
+    balance.value = BigNumber.from(await contract.balanceOf(address));
   } catch (e) {}
 };
 
@@ -72,12 +78,21 @@ const updateAmount = useDebounceFn(async () => {
 const cls = computed(() => {
   return {
     "animate-pulse": props.loading,
+    "!border-red-500": error.value,
   };
 });
+
+const checkBalance = () => {
+  if (!model.value.amount || !balance.value) return;
+
+  const amount = parseFloat(ethers.utils.formatEther(balance.value));
+  error.value = model.value.amount > amount;
+};
 
 watch(
   () => model.value.amount,
   (val) => {
+    checkBalance();
     if (document.activeElement !== inputRef.value) {
       rawInput.value =
         val !== undefined && val !== null
@@ -95,20 +110,31 @@ const onInputAmount = (e: Event) => {
   const parsed = parseFloat(val.replace(",", "."));
   if (!isNaN(parsed)) {
     model.value.amount = parsed;
+    // Check if the input is greater than the balance
     updateAmount(); // debounced emit
   } else {
     model.value.amount = undefined;
   }
 };
+
+const max = () => {
+  if (!model.value.currency || !balance.value) return;
+
+  const amount = parseFloat(ethers.utils.formatEther(balance.value));
+  model.value.amount = amount;
+  rawInput.value = amount
+    .toFixed(model.value.currency.decimals)
+    .replace(/\.?0+$/, "");
+  updateAmount();
+};
 </script>
 
 <template>
-  <div class="rounded-xl p-4 bg-muted" :class="cls">
-    <div
-      class="flex items-center gap-2 justify-between mb-2 text-sm text-muted-foreground"
-    >
-      <p><slot /></p>
+  <div class="rounded-xl p-4 bg-muted border border-transparent" :class="cls">
+    <div class="flex items-center gap-2 mb-2 text-sm text-muted-foreground">
+      <p class="flex-1"><slot /></p>
       <p v-if="balanceVisible">{{ balanceLabel }}</p>
+      <button @click="max" class="font-bold cursor-pointer">MAX</button>
     </div>
     <div class="flex items-center gap-2">
       <input
