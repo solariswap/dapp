@@ -19,13 +19,15 @@ const model = defineModel<TokenAmountModel>({ required: true });
 const account = useAppKitAccount();
 
 const balance = ref<number>();
+const rawInput = ref("");
 const provider = useProvider();
+const inputRef = ref<HTMLInputElement>();
 
 const balanceVisible = computed(() => !!model.value.currency);
 const balanceLabel = computed(() => {
   if (!balance.value) return `Balance: 0 ${model.value.currency.symbol}`;
 
-  return `Balance: ${Number(balance.value).toFixed(2)} ${model.value.currency.symbol}`;
+  return `Balance: ${Number(balance.value).toFixed(4)} ${model.value.currency.symbol}`;
 });
 
 const onUpdate = async (erc20Address: string) => {
@@ -72,6 +74,32 @@ const cls = computed(() => {
     "animate-pulse": props.loading,
   };
 });
+
+watch(
+  () => model.value.amount,
+  (val) => {
+    if (document.activeElement !== inputRef.value) {
+      rawInput.value =
+        val !== undefined && val !== null
+          ? val.toFixed(model.value.currency.decimals).replace(/\.?0+$/, "") // show decimal, no trailing 0s
+          : "";
+    }
+  },
+  { immediate: true },
+);
+
+const onInputAmount = (e: Event) => {
+  const val = (e.target as HTMLInputElement).value;
+  rawInput.value = val;
+
+  const parsed = parseFloat(val.replace(",", "."));
+  if (!isNaN(parsed)) {
+    model.value.amount = parsed;
+    updateAmount(); // debounced emit
+  } else {
+    model.value.amount = undefined;
+  }
+};
 </script>
 
 <template>
@@ -85,9 +113,11 @@ const cls = computed(() => {
     <div class="flex items-center gap-2">
       <input
         v-if="!loading"
-        @input="updateAmount"
-        type="number"
-        v-model="model.amount"
+        ref="inputRef"
+        @input="onInputAmount"
+        type="text"
+        inputmode="decimal"
+        :value="rawInput"
         placeholder="0,0"
         class="outline-none w-full placeholder:text-muted-foreground text-xl"
       />

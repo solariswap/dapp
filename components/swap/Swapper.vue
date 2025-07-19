@@ -27,7 +27,6 @@ const erc20Factory = useErc20Factory();
 const modalStore = useModalStore();
 const swapperFactory = useSwapperFactory();
 const quoterApi = useQuoterApi();
-const pool = ref<ReturnType<typeof usePool>>();
 const provider = useProvider();
 const explorer = useExplorer();
 const swapper = ref<ReturnType<typeof swapperFactory.construct>>();
@@ -53,7 +52,7 @@ const swap = async () => {
 
   const token0 = erc20Factory.construct(store.state.model0.currency.address!);
 
-  let hash = undefined;
+  let hash: string;
   const tokenInDecimals = store.state.model0.currency.decimals;
   const tokenOutDecimals = store.state.model1.currency.decimals;
 
