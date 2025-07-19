@@ -13,8 +13,6 @@ const lines = computed(() => {
     ? 1 / store.state.pricePerToken0
     : store.state.pricePerToken0;
 
-  console.log("reversed", reversed);
-
   const lines = [];
 
   if (store.state.pricePerToken0) {
