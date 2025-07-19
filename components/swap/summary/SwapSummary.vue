@@ -7,14 +7,13 @@ const lines = computed(() => {
   const currency0 = store.state.model0.currency;
   const currency1 = store.state.model1.currency;
 
-  const reversed = store.areTokenReversed([
-    currency0.address,
-    currency1.address,
-  ]);
+  const reversed = store.state.reversed;
 
   const price = reversed
     ? 1 / store.state.pricePerToken0
     : store.state.pricePerToken0;
+
+  console.log("reversed", reversed);
 
   const lines = [];
 

@@ -25,6 +25,7 @@ export type GetQuoteParams =
   | GetQuoteExactOutputParams;
 
 export type BaseQuoteResponse = {
+  reversed: boolean;
   tokenIn: string;
   tokenOut: string;
   mode: QuoteMode;

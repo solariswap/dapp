@@ -10,7 +10,8 @@ type StoreState = {
 
   pricePerToken0: number;
   poolFee?: number;
-  poolTokens?: [string, string];
+
+  reversed: boolean;
 
   slippageTolerance: number;
   deadline: number;
@@ -26,6 +27,7 @@ export const useSwapperStore = defineStore("swapperStore", () => {
     model1: {
       currency: currencies[1],
     },
+    reversed: false,
     model0Loading: false,
     model1Loading: false,
     pricePerToken0: 0,
@@ -39,15 +41,6 @@ export const useSwapperStore = defineStore("swapperStore", () => {
     return (state.value.slippageTolerance * 100).toFixed(2) + "%";
   });
 
-  const areTokenReversed = (tokens: [string, string]) => {
-    if (!state.value.poolTokens) return false;
-
-    return (
-      tokens[0] === state.value.poolTokens[1] &&
-      tokens[1] === state.value.poolTokens[0]
-    );
-  };
-
   const setMode = (mode: "quoteIn" | "quoteOut") => {
     state.value.mode = mode;
   };
@@ -56,7 +49,6 @@ export const useSwapperStore = defineStore("swapperStore", () => {
     state,
 
     slippageTolerance,
-    areTokenReversed,
     setMode,
   };
 });

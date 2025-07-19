@@ -15,11 +15,17 @@ export default defineNuxtConfig({
     "@nuxt/ui",
     "@vueuse/nuxt",
     "@nuxtjs/seo",
+    "nuxt-gtag",
   ],
 
   icon: {
     mode: "css",
     cssLayer: "base",
+  },
+
+  gtag: {
+    enabled: process.env.NODE_ENV === "production",
+    id: "G-58X1LTVMTE",
   },
 
   site: {

@@ -160,6 +160,7 @@ const quoteInUpdate = async () => {
 
     store.state.pricePerToken0 = tickToPrice(response.pool.tick);
     store.state.poolFee = response.pool.fee;
+    store.state.reversed = response.reversed;
 
     store.state.model1.amount = parseFloat(
       ethers.utils.formatUnits(
@@ -204,6 +205,7 @@ const quoteOutUpdate = async () => {
 
     store.state.pricePerToken0 = tickToPrice(response.pool.tick);
     store.state.poolFee = response.pool.fee;
+    store.state.reversed = response.reversed;
 
     store.state.model0.amount = parseFloat(
       ethers.utils.formatUnits(
