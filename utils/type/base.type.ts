@@ -3,6 +3,7 @@ import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
 export type InlineInputOption<T = string | number> = {
   label: string;
   value: T;
+  disabled?: boolean;
 };
 
 export type TabListItem = {

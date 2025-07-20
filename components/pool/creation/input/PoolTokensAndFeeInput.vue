@@ -8,8 +8,26 @@ import Button from "~/components/base/input/Button.vue";
 import Form from "~/components/base/form/Form.vue";
 import { usePoolCreationStore } from "~/store/pool-creation.store";
 import Tooltip from "~/components/layout/tooltip/Tooltip.vue";
+import type { FeeTier } from "~/utils/constant/fee.constant";
+import { usePoolsApi } from "~/composables/api/pools-api.composable";
 
 const poolCreationStore = usePoolCreationStore();
+const poolsApi = usePoolsApi();
+
+const availableFees = ref<FeeTier[]>([]);
+
+const fetchAvailablePools = async () => {
+  const currency0 = poolCreationStore.state.currency0;
+  const currency1 = poolCreationStore.state.currency1;
+
+  if (!currency0 || !currency1) return;
+
+  // Fetch available pools for the selected tokens.
+  availableFees.value = await poolsApi.$getAvailable(
+    currency0.address,
+    currency1.address,
+  );
+};
 
 watch(
   () => poolCreationStore.state.currency0,
@@ -17,6 +35,9 @@ watch(
     if (!after) return;
     if (after?.address === poolCreationStore.state.currency1?.address)
       poolCreationStore.state.currency1 = undefined;
+
+    fetchAvailablePools();
+    poolCreationStore.state.poolFee = undefined;
   },
 );
 
@@ -26,6 +47,9 @@ watch(
     if (!after) return;
     if (after?.address === poolCreationStore.state.currency0?.address)
       poolCreationStore.state.currency0 = undefined;
+
+    fetchAvailablePools();
+    poolCreationStore.state.poolFee = undefined;
   },
 );
 
@@ -85,7 +109,10 @@ const buttonDisabled = computed(() => {
               </Tooltip>
             </Label>
             <div class="overflow-auto w-full">
-              <PoolFeeInput v-model="poolCreationStore.state.poolFee" />
+              <PoolFeeInput
+                v-model="poolCreationStore.state.poolFee"
+                :enabled="availableFees"
+              />
             </div>
           </FormInput>
         </Form>
