@@ -8,9 +8,13 @@ import { useAppKitAccount } from "@reown/appkit/vue";
 import type { Hrc20Entity } from "~/utils/type/entity/hrc20-entity.type";
 import { formatTokenDecimals } from "~/utils/function/currency.function";
 
-const props = withDefaults(defineProps<{ loading?: boolean }>(), {
-  loading: false,
-});
+const props = withDefaults(
+  defineProps<{ loading?: boolean; isInput?: boolean }>(),
+  {
+    loading: false,
+    isInput: true,
+  },
+);
 const emit = defineEmits<{
   (e: "update-amount", amount?: number): void;
   (e: "update-currency", currency: Hrc20Entity): void;
@@ -83,6 +87,8 @@ const cls = computed(() => {
 });
 
 const checkBalance = () => {
+  if (!props.isInput) return;
+
   if (!model.value.amount || !balance.value) return;
 
   const amount = parseFloat(ethers.utils.formatEther(balance.value));

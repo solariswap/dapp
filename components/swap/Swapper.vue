@@ -303,6 +303,7 @@ const isDisabled = computed(() => {
       <TokenAmountInput
         v-model="store.state.model1"
         :loading="store.state.model1Loading"
+        :is-input="false"
         @update-amount="onAmountChange('quoteOut')"
         @update-currency="onCurrencyChange('quoteOut', $event)"
       >
